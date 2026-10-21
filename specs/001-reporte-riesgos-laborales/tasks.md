@@ -87,11 +87,11 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Frontend base
 
-- [ ] T028 [P] Crear el cliente HTTP (`fetch` con `credentials: 'include'`, parseo de `ProblemDetails`, redirección a login ante 401) en `frontend/src/api/cliente.js`
-- [ ] T029 [P] Crear el contexto de sesión (`AuthProvider`, `useAuth` con `usuario`, `login`) y `RutaProtegida` (por rol) en `frontend/src/auth/AuthContext.jsx` y `frontend/src/auth/RutaProtegida.jsx`
-- [ ] T030 Crear el router y el layout con menú según rol en `frontend/src/main.jsx` y `frontend/src/App.jsx`, y la página de login en `frontend/src/pages/Login.jsx`
-- [ ] T031 [P] Test del login (envía credenciales, muestra error genérico ante 401) en `frontend/src/__tests__/Login.test.jsx`
-- [ ] T032 [P] Crear `frontend/src/textos.js` con la traducción de los enums de la API a los textos de la spec ("EnProgreso" ⇒ "En Progreso", "UsoEpp" ⇒ "Uso de elementos de protección personal", "Pendiente" ⇒ "Pendiente de clasificación", etc.)
+- [X] T028 [P] Crear el cliente HTTP (`fetch` con `credentials: 'include'`, parseo de `ProblemDetails`, redirección a login ante 401) en `frontend/src/api/cliente.js`
+- [X] T029 [P] Crear el contexto de sesión (`AuthProvider`, `useAuth` con `usuario`, `login`) y `RutaProtegida` (por rol) en `frontend/src/auth/AuthContext.jsx` y `frontend/src/auth/RutaProtegida.jsx`
+- [X] T030 Crear el router y el layout con menú según rol en `frontend/src/main.jsx` y `frontend/src/App.jsx`, y la página de login en `frontend/src/pages/Login.jsx`
+- [X] T031 [P] Test del login (envía credenciales, muestra error genérico ante 401) en `frontend/src/__tests__/Login.test.jsx`
+- [X] T032 [P] Crear `frontend/src/textos.js` con la traducción de los enums de la API a los textos de la spec ("EnProgreso" ⇒ "En Progreso", "UsoEpp" ⇒ "Uso de elementos de protección personal", "Pendiente" ⇒ "Pendiente de clasificación", etc.)
 
 **Checkpoint**: la app arranca, aplica migraciones, crea el admin, permite login y rechaza requests sin sesión. `dotnet test` y `npm test` en verde.
 
