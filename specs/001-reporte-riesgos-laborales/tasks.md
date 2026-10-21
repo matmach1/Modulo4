@@ -207,7 +207,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T081 [US4] Implementar `ServicioAdministracion.CambiarEstadoAsync` y `RegistrarAccionAsync` (rechaza reportes Cerrados; incrementa `RowVersion`) en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs`
 - [X] T082 [US4] Implementar `POST /api/admin/reportes/{id}/estado` y `POST /api/admin/reportes/{id}/acciones` en `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs`, e incluir inicio de progreso, cierre y acciones (ordenadas por fecha asc.) en el detalle de ambos roles en `backend/src/Riesgos.Api/Dtos/ReporteDetalleMapper.cs` (hace pasar T077–T078)
 - [X] T083 [US4] Agregar al detalle, solo para admin, los botones "Pasar a En Progreso" y "Cerrar" (formulario con acción realizada y observación) y el formulario de nueva acción; mostrar a ambos roles las acciones (o "Sin acciones registradas", FR-033) y los datos de cierre; ante 409 avisar y recargar, en `frontend/src/components/GestionReporte.jsx` y `frontend/src/pages/DetalleReporte.jsx`
-- [ ] T084 [P] [US4] Tests de frontend de la gestión (botones visibles solo en estados válidos, validación del cierre) en `frontend/src/__tests__/US4.test.jsx`
+- [X] T084 [P] [US4] Tests de frontend de la gestión (botones visibles solo en estados válidos, validación del cierre) en `frontend/src/__tests__/US4.test.jsx`
 
 **Checkpoint**: US1–US4 funcionan; el ciclo completo Abierto ⇒ Cerrado queda trazado.
 
