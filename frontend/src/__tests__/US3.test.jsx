@@ -58,7 +58,22 @@ describe('Listado global', () => {
 
     await userEvent.click(await screen.findByRole('button', { name: 'Siguiente' }));
 
-    expect(fetch.mock.calls.some(([url]) => url === '/api/admin/reportes?page=2&size=20')).toBe(true);
+    expect(fetch.mock.calls.some(([url]) => url === '/api/admin/reportes?page=2&size=20&orden=fecha')).toBe(true);
+  });
+});
+
+describe('Orden del listado (RF-02e)', () => {
+  it('pide el listado ordenado por criticidad desde la primera página', async () => {
+    const fetch = simularApi([
+      sesionDe(ADMIN),
+      ['GET', /\/api\/admin\/reportes/, () => respuestaJson(200, { items: [DETALLE], page: 1, size: 20, total: 25 })],
+    ]);
+    renderApp('/admin/reportes');
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Siguiente' }));
+    await userEvent.selectOptions(screen.getByLabelText('Ordenar por'), 'criticidad');
+
+    expect(fetch.mock.calls.at(-1)[0]).toBe('/api/admin/reportes?page=1&size=20&orden=criticidad');
   });
 });
 
