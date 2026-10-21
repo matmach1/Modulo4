@@ -10,6 +10,12 @@ public static class AuthEndpoints
     {
         var grupo = app.MapGroup("/api/auth");
 
+        grupo.MapPost("/registro", async (RegistroRequest request, ServicioCuentas cuentas, CancellationToken ct) =>
+        {
+            var usuario = await cuentas.RegistrarAsync(request.Email, request.Password, ct);
+            return Results.Created($"/api/auth/yo", new UsuarioResponse(usuario.Id, usuario.Email, usuario.Rol));
+        });
+
         grupo.MapPost("/login", async (LoginRequest request, ServicioCuentas cuentas, ServicioSesiones sesiones, HttpContext http, CancellationToken ct) =>
         {
             var usuario = await cuentas.AutenticarAsync(request.Email, request.Password, ct);
