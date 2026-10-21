@@ -46,6 +46,39 @@ public sealed class ServicioReportes(RiesgosDbContext db, IColaClasificacion col
         return await ObtenerDetalleAsync(reporte.Id, usuario, ct);
     }
 
+    // Solo el creador y solo en Abierto (FR-012). Pone la clasificación en pendiente, regenera el
+    // borrador y encola una nueva clasificación sin esperarla (FR-017, FR-022).
+    public async Task<Reporte> EditarAsync(int id, UsuarioActual usuario, string? descripcion, string? ubicacion, CancellationToken ct = default)
+    {
+        var reporte = await db.Reportes.SingleOrDefaultAsync(r => r.Id == id, ct) ?? throw new NoEncontrado("El reporte no existe.");
+        if (reporte.CreadorId != usuario.Id)
+        {
+            throw new AccesoDenegado("Solo quien creó el reporte puede editarlo.");
+        }
+
+        if (reporte.Estado != EstadoReporte.Abierto)
+        {
+            throw new Conflicto("Solo se puede editar un reporte en estado Abierto.");
+        }
+
+        reporte.Descripcion = Texto.Validar(descripcion, "descripcion", Reporte.MaxDescripcion);
+        reporte.Ubicacion = Texto.Validar(ubicacion, "ubicacion", Reporte.MaxUbicacion);
+        reporte.ReiniciarClasificacion();
+
+        var evento = await db.EventosNotificacion.SingleOrDefaultAsync(e => e.ReporteId == id, ct);
+        if (evento is not null)
+        {
+            var borrador = GeneradorBorrador.Generar(reporte, usuario.Email);
+            evento.AsuntoBorrador = borrador.Asunto;
+            evento.CuerpoBorrador = borrador.Cuerpo;
+            evento.FechaActualizacion = tiempo.GetUtcNow();
+        }
+
+        await db.SaveChangesAsync(ct);
+        cola.Encolar(new TrabajoClasificacion(reporte.Id, reporte.VersionClasificacion));
+        return await ObtenerDetalleAsync(reporte.Id, usuario, ct);
+    }
+
     public async Task<Pagina<Reporte>> ListarPropiosAsync(UsuarioActual usuario, int? page, int? size, CancellationToken ct = default)
     {
         var (p, s) = Paginacion.Validar(page, size);
