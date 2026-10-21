@@ -51,19 +51,19 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Tests de base (escribir primero)
 
-- [ ] T007 [P] Test de arquitectura en `backend/tests/Riesgos.Core.Tests/ArquitecturaTests.cs`: el ensamblado `Riesgos.Core` y `Riesgos.Api` no referencian el ensamblado `Anthropic` directamente (Principio I) [Trait("FR","FR-014")]
-- [ ] T008 [P] Tests del validador de textos en `backend/tests/Riesgos.Core.Tests/Validacion/TextoTests.cs`: recorta espacios, un texto solo con espacios es vacío, respeta largos máximos (R8)
+- [X] T007 [P] Test de arquitectura en `backend/tests/Riesgos.Core.Tests/ArquitecturaTests.cs`: el ensamblado `Riesgos.Core` y `Riesgos.Api` no referencian el ensamblado `Anthropic` directamente (Principio I) [Trait("FR","FR-014")]
+- [X] T008 [P] Tests del validador de textos en `backend/tests/Riesgos.Core.Tests/Validacion/TextoTests.cs`: recorta espacios, un texto solo con espacios es vacío, respeta largos máximos (R8)
 - [ ] T009 [P] Tests del handler de sesión en `backend/tests/Riesgos.Api.Tests/Auth/SesionTests.cs`: request sin cookie a un endpoint protegido ⇒ 401 (AC-12); login con credenciales válidas ⇒ 200 + cookie `HttpOnly`/`SameSite=Strict`; login con email inexistente y con contraseña incorrecta ⇒ 401 con el mismo mensaje (R4); `UltimaActividad` se renueva; fuera de Development, un request HTTP ⇒ redirección a HTTPS y las respuestas HTTPS incluyen `Strict-Transport-Security` (FR-032, AC-74)
 
 ### Dominio y persistencia
 
-- [ ] T010 [P] Crear enums `Rol`, `EstadoReporte`, `TipoReporte`, `Categoria`, `Criticidad` (con `Pendiente` en los tres de clasificación) y el orden de criticidad (`Critica`=0 … `Pendiente`=4) en `backend/src/Riesgos.Core/Dominio/Enums.cs`, según [data-model.md](data-model.md)
-- [ ] T011 [P] Crear entidad `Usuario` (`Email` string(254) normalizado trim+minúsculas, `PasswordHash`, `Rol`, `FechaCreacion`) en `backend/src/Riesgos.Core/Dominio/Usuario.cs`
-- [ ] T012 [P] Crear entidad `Sesion` (`UsuarioId`, `TokenHash` string(64), `FechaCreacion`, `UltimaActividad`; método `EstaVigente(ahora)` = `UltimaActividad + 24 h ≥ ahora`) en `backend/src/Riesgos.Core/Dominio/Sesion.cs`
-- [ ] T013 [P] Implementar `Texto.Normalizar` y `Texto.Validar(valor, campo, maximo)` en `backend/src/Riesgos.Core/Validacion/Texto.cs` y `ErrorValidacion` en `backend/src/Riesgos.Core/Validacion/ErrorValidacion.cs` (hace pasar T008)
+- [X] T010 [P] Crear enums `Rol`, `EstadoReporte`, `TipoReporte`, `Categoria`, `Criticidad` (con `Pendiente` en los tres de clasificación) y el orden de criticidad (`Critica`=0 … `Pendiente`=4) en `backend/src/Riesgos.Core/Dominio/Enums.cs`, según [data-model.md](data-model.md)
+- [X] T011 [P] Crear entidad `Usuario` (`Email` string(254) normalizado trim+minúsculas, `PasswordHash`, `Rol`, `FechaCreacion`) en `backend/src/Riesgos.Core/Dominio/Usuario.cs`
+- [X] T012 [P] Crear entidad `Sesion` (`UsuarioId`, `TokenHash` string(64), `FechaCreacion`, `UltimaActividad`; método `EstaVigente(ahora)` = `UltimaActividad + 24 h ≥ ahora`) en `backend/src/Riesgos.Core/Dominio/Sesion.cs`
+- [X] T013 [P] Implementar `Texto.Normalizar` y `Texto.Validar(valor, campo, maximo)` en `backend/src/Riesgos.Core/Validacion/Texto.cs` y `ErrorValidacion` en `backend/src/Riesgos.Core/Validacion/ErrorValidacion.cs` (hace pasar T008)
 - [ ] T014 Crear `RiesgosDbContext` con `Usuarios` y `Sesiones`, índice único sobre `Usuario.Email` y sobre `Sesion.TokenHash`, enums guardados como texto, en `backend/src/Riesgos.Core/Persistencia/RiesgosDbContext.cs` y `backend/src/Riesgos.Core/Persistencia/Configuraciones/UsuarioConfig.cs`, `SesionConfig.cs`
 - [ ] T015 Crear la migración inicial `Inicial` en `backend/src/Riesgos.Core/Persistencia/Migrations/` y aplicar migraciones al arrancar en `backend/src/Riesgos.Api/Program.cs` (cadena de conexión por defecto `Data Source=data/riesgos.db`)
-- [ ] T016 [P] Implementar `HashContrasena` (BCrypt work factor 12; rechazar > 72 bytes) en `backend/src/Riesgos.Core/Servicios/HashContrasena.cs`
+- [X] T016 [P] Implementar `HashContrasena` (BCrypt work factor 12; rechazar > 72 bytes) en `backend/src/Riesgos.Core/Servicios/HashContrasena.cs`
 
 ### Autenticación y API base
 
@@ -75,8 +75,8 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Módulo de clasificación (interfaces y cola)
 
-- [ ] T022 [P] Crear `IClasificadorReportes`, `EntradaClasificacion`, `ResultadoClasificacion` (`Exito`/`Falla`) y `MotivoFalla` en `backend/src/Riesgos.Core/Clasificacion/IClasificadorReportes.cs`, exactamente como en [contracts/clasificador.md](contracts/clasificador.md)
-- [ ] T023 [P] Crear `IColaClasificacion` (`Encolar(TrabajoClasificacion)`) y `TrabajoClasificacion(int ReporteId, int Version)` en `backend/src/Riesgos.Core/Clasificacion/IColaClasificacion.cs`, y la implementación con `Channel<TrabajoClasificacion>` en `backend/src/Riesgos.Core/Clasificacion/ColaClasificacion.cs`
+- [X] T022 [P] Crear `IClasificadorReportes`, `EntradaClasificacion`, `ResultadoClasificacion` (`Exito`/`Falla`) y `MotivoFalla` en `backend/src/Riesgos.Core/Clasificacion/IClasificadorReportes.cs`, exactamente como en [contracts/clasificador.md](contracts/clasificador.md)
+- [X] T023 [P] Crear `IColaClasificacion` (`Encolar(TrabajoClasificacion)`) y `TrabajoClasificacion(int ReporteId, int Version)` en `backend/src/Riesgos.Core/Clasificacion/IColaClasificacion.cs`, y la implementación con `Channel<TrabajoClasificacion>` en `backend/src/Riesgos.Core/Clasificacion/ColaClasificacion.cs`
 
 ### Infraestructura de tests
 
