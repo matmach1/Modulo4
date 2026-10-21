@@ -61,8 +61,8 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T011 [P] Crear entidad `Usuario` (`Email` string(254) normalizado trim+minúsculas, `PasswordHash`, `Rol`, `FechaCreacion`) en `backend/src/Riesgos.Core/Dominio/Usuario.cs`
 - [X] T012 [P] Crear entidad `Sesion` (`UsuarioId`, `TokenHash` string(64), `FechaCreacion`, `UltimaActividad`; método `EstaVigente(ahora)` = `UltimaActividad + 24 h ≥ ahora`) en `backend/src/Riesgos.Core/Dominio/Sesion.cs`
 - [X] T013 [P] Implementar `Texto.Normalizar` y `Texto.Validar(valor, campo, maximo)` en `backend/src/Riesgos.Core/Validacion/Texto.cs` y `ErrorValidacion` en `backend/src/Riesgos.Core/Validacion/ErrorValidacion.cs` (hace pasar T008)
-- [ ] T014 Crear `RiesgosDbContext` con `Usuarios` y `Sesiones`, índice único sobre `Usuario.Email` y sobre `Sesion.TokenHash`, enums guardados como texto, en `backend/src/Riesgos.Core/Persistencia/RiesgosDbContext.cs` y `backend/src/Riesgos.Core/Persistencia/Configuraciones/UsuarioConfig.cs`, `SesionConfig.cs`
-- [ ] T015 Crear la migración inicial `Inicial` en `backend/src/Riesgos.Core/Persistencia/Migrations/` y aplicar migraciones al arrancar en `backend/src/Riesgos.Api/Program.cs` (cadena de conexión por defecto `Data Source=data/riesgos.db`)
+- [X] T014 Crear `RiesgosDbContext` con `Usuarios` y `Sesiones`, índice único sobre `Usuario.Email` y sobre `Sesion.TokenHash`, enums guardados como texto, en `backend/src/Riesgos.Core/Persistencia/RiesgosDbContext.cs` y `backend/src/Riesgos.Core/Persistencia/Configuraciones/UsuarioConfig.cs`, `SesionConfig.cs`
+- [X] T015 Crear la migración inicial `Inicial` en `backend/src/Riesgos.Core/Persistencia/Migrations/` y aplicar migraciones al arrancar en `backend/src/Riesgos.Api/Program.cs` (cadena de conexión por defecto `Data Source=data/riesgos.db`)
 - [X] T016 [P] Implementar `HashContrasena` (BCrypt work factor 12; rechazar > 72 bytes) en `backend/src/Riesgos.Core/Servicios/HashContrasena.cs`
 
 ### Autenticación y API base
