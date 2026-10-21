@@ -8,30 +8,12 @@ namespace Riesgos.Clasificacion;
 // (contracts/clasificador.md). Cualquier otra cosa es respuesta inválida (FR-018).
 public static class MapeadorRespuesta
 {
-    public static readonly IReadOnlyDictionary<string, TipoReporte> Tipos = new Dictionary<string, TipoReporte>(StringComparer.Ordinal)
-    {
-        ["Acto inseguro"] = TipoReporte.ActoInseguro,
-        ["Condición insegura"] = TipoReporte.CondicionInsegura,
-        ["Casi accidente"] = TipoReporte.CasiAccidente,
-        ["Riesgo operativo"] = TipoReporte.RiesgoOperativo,
-        ["Otro"] = TipoReporte.Otro,
-    };
+    // Valores permitidos al modelo: los textos de la spec, sin "Pendiente de clasificación".
+    public static readonly IReadOnlyDictionary<string, TipoReporte> Tipos = Invertir(Textos.Tipos, TipoReporte.Pendiente);
 
-    public static readonly IReadOnlyDictionary<string, Categoria> Categorias = new Dictionary<string, Categoria>(StringComparer.Ordinal)
-    {
-        ["Problema de infraestructura"] = Categoria.ProblemaInfraestructura,
-        ["Riesgo eléctrico"] = Categoria.RiesgoElectrico,
-        ["Uso de elementos de protección personal"] = Categoria.UsoEpp,
-        ["Otro"] = Categoria.Otro,
-    };
+    public static readonly IReadOnlyDictionary<string, Categoria> Categorias = Invertir(Textos.Categorias, Categoria.Pendiente);
 
-    public static readonly IReadOnlyDictionary<string, Criticidad> Criticidades = new Dictionary<string, Criticidad>(StringComparer.Ordinal)
-    {
-        ["Baja"] = Criticidad.Baja,
-        ["Media"] = Criticidad.Media,
-        ["Alta"] = Criticidad.Alta,
-        ["Crítica"] = Criticidad.Critica,
-    };
+    public static readonly IReadOnlyDictionary<string, Criticidad> Criticidades = Invertir(Textos.Criticidades, Criticidad.Pendiente);
 
     private static readonly ResultadoClasificacion Invalida = new ResultadoClasificacion.Falla(MotivoFalla.RespuestaInvalida);
 
@@ -69,4 +51,8 @@ public static class MapeadorRespuesta
             && elemento.ValueKind == JsonValueKind.String
             && valores.TryGetValue(elemento.GetString()!, out valor!);
     }
+
+    private static Dictionary<string, T> Invertir<T>(IReadOnlyDictionary<T, string> textos, T pendiente)
+        where T : struct, Enum =>
+        textos.Where(par => !par.Key.Equals(pendiente)).ToDictionary(par => par.Value, par => par.Key, StringComparer.Ordinal);
 }
