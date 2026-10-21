@@ -213,7 +213,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Orden por criticidad (FR-024, RF-02e)
 
-- [ ] T085 [P] [US3] Tests en `backend/tests/Riesgos.Api.Tests/US3/ListadoAdminTests.cs`: AC-70 `orden=criticidad` ⇒ Crítica, Alta, Media, Baja, Pendiente y fecha desc. dentro de cada nivel; AC-71 `orden` desconocido ⇒ 400; sin `orden` ⇒ por fecha
+- [X] T085 [P] [US3] Tests en `backend/tests/Riesgos.Api.Tests/US3/ListadoAdminTests.cs`: AC-70 `orden=criticidad` ⇒ Crítica, Alta, Media, Baja, Pendiente y fecha desc. dentro de cada nivel; AC-71 `orden` desconocido ⇒ 400; sin `orden` ⇒ por fecha
 - [ ] T086 [US3] Agregar el parámetro `orden` (`fecha` | `criticidad`) a `ServicioAdministracion.ListarAsync` (orden `RangoCriticidad, FechaCreacion DESC, Id DESC`) y a `GET /api/admin/reportes` en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs` y `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs`
 - [ ] T087 [US3] Agregar el selector de orden al listado en `frontend/src/pages/ListadoAdmin.jsx`
 

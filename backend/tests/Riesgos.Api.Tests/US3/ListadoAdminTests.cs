@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
+using Microsoft.EntityFrameworkCore;
 using Riesgos.Api.Tests.Infraestructura;
+using Riesgos.Core.Dominio;
 
 namespace Riesgos.Api.Tests.US3;
 
@@ -154,5 +156,58 @@ public class ListadoAdminTests
 
         Assert.Equal(HttpStatusCode.OK, login.StatusCode);
         Assert.Equal(HttpStatusCode.OK, listado.StatusCode);
+    }
+
+    [Fact]
+    [Trait("AC", "AC-70")]
+    [Trait("FR", "FR-024")]
+    public async Task Ordenado_por_criticidad_primero_Critica_y_al_final_Pendiente_con_fecha_desc_en_cada_nivel()
+    {
+        await using var app = new ApiFactory();
+        var cliente = await app.ClienteAutenticadoAsync();
+        var criticidades = new[]
+        {
+            Criticidad.Baja, Criticidad.Critica, Criticidad.Pendiente, Criticidad.Alta, Criticidad.Media, Criticidad.Critica,
+        };
+        var ids = new List<int>();
+        foreach (var criticidad in criticidades)
+        {
+            var id = (await cliente.CrearReporteAsync($"{criticidad} {ids.Count}")).Id;
+            app.EnScope(db => db.Reportes.Where(r => r.Id == id).ExecuteUpdate(s => s.SetProperty(r => r.Criticidad, criticidad)));
+            ids.Add(id);
+            app.Reloj.Advance(TimeSpan.FromMinutes(1));
+        }
+
+        var admin = await app.ComoAdminAsync();
+        var pagina = await ListarAsync(admin, "?orden=criticidad");
+
+        Assert.Equal(["Critica 5", "Critica 1", "Alta 3", "Media 4", "Baja 0", "Pendiente 2"], pagina.Items.Select(r => r.Descripcion));
+    }
+
+    [Fact]
+    [Trait("AC", "AC-71")]
+    public async Task Criterio_de_orden_desconocido_responde_400()
+    {
+        await using var app = new ApiFactory();
+        var admin = await app.ComoAdminAsync();
+
+        var respuesta = await admin.GetAsync("/api/admin/reportes?orden=prioridad");
+
+        Assert.Equal(HttpStatusCode.BadRequest, respuesta.StatusCode);
+    }
+
+    [Fact]
+    [Trait("FR", "FR-024")]
+    public async Task Orden_fecha_explicito_equivale_al_orden_por_defecto()
+    {
+        await using var app = new ApiFactory();
+        var cliente = await app.ClienteAutenticadoAsync();
+        await CrearVariosAsync(app, cliente, 3);
+        var admin = await app.ComoAdminAsync();
+
+        var explicito = await ListarAsync(admin, "?orden=fecha");
+        var porDefecto = await ListarAsync(admin);
+
+        Assert.Equal(porDefecto.Items.Select(r => r.Id), explicito.Items.Select(r => r.Id));
     }
 }
