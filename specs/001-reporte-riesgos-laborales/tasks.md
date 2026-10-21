@@ -122,7 +122,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T044 [P] [US1] Crear la página de registro en `frontend/src/pages/Registro.jsx`
 - [X] T045 [P] [US1] Crear la página "Nuevo reporte" (descripción, ubicación, categoría sugerida opcional; muestra errores de validación) en `frontend/src/pages/NuevoReporte.jsx`
 - [X] T046 [P] [US1] Crear la página "Mis reportes" (estado, clasificación, fecha; estado vacío "Todavía no creaste reportes") en `frontend/src/pages/MisReportes.jsx`
-- [ ] T047 [US1] Crear la página de detalle (datos, estado, clasificación, fecha, hora y creador; mensaje de acceso denegado ante 403) en `frontend/src/pages/DetalleReporte.jsx`
+- [X] T047 [US1] Crear la página de detalle (datos, estado, clasificación, fecha, hora y creador; mensaje de acceso denegado ante 403) en `frontend/src/pages/DetalleReporte.jsx`
 - [ ] T048 [P] [US1] Tests de frontend para registro, nuevo reporte y mis reportes en `frontend/src/__tests__/US1.test.jsx`
 
 **Checkpoint**: US1 funciona y se prueba sola (MVP sin clasificación: los reportes quedan "Pendiente de clasificación").
