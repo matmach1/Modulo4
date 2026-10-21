@@ -1,6 +1,7 @@
 using System.Net.Http.Json;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
+using Riesgos.Core.Clasificacion;
 using Riesgos.Core.Dominio;
 using Riesgos.Core.Persistencia;
 using Riesgos.Core.Servicios;
@@ -64,5 +65,33 @@ public static class Clientes
     {
         using var scope = app.Services.CreateScope();
         return consulta(scope.ServiceProvider.GetRequiredService<RiesgosDbContext>());
+    }
+
+    // Procesa los trabajos encolados con el procesador real y el clasificador simulado.
+    public static async Task ProcesarClasificacionesAsync(this ApiFactory app)
+    {
+        app.Cola.Procesar ??= async (trabajo, ct) =>
+        {
+            using var scope = app.Services.CreateScope();
+            await scope.ServiceProvider.GetRequiredService<ProcesadorClasificacion>().ProcesarAsync(trabajo, ct);
+        };
+        await app.Cola.ProcesarPendientesAsync();
+    }
+
+    // Procesa la cola con un clasificador que no responde: avanza el reloj 10 s cuando ya fue llamado.
+    public static async Task ProcesarSinRespuestaAsync(this ApiFactory app)
+    {
+        app.Clasificador.NoResponder = true;
+        var llamadasPrevias = app.Clasificador.Entradas.Count;
+        var procesando = app.ProcesarClasificacionesAsync();
+        var limite = DateTime.UtcNow.AddSeconds(5);
+        while (app.Clasificador.Entradas.Count == llamadasPrevias && !procesando.IsCompleted && DateTime.UtcNow < limite)
+        {
+            await Task.Delay(10);
+        }
+
+        app.Reloj.Advance(TimeSpan.FromSeconds(10));
+        await procesando.WaitAsync(TimeSpan.FromSeconds(5));
+        app.Clasificador.NoResponder = false;
     }
 }

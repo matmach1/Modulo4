@@ -36,8 +36,11 @@ public static class Reportes
     public static async Task<ReporteDto> DetalleAsync(this HttpClient cliente, int id) =>
         (await cliente.GetFromJsonAsync<ReporteDto>($"/api/reportes/{id}"))!;
 
+    public static async Task<PaginaDto<ReporteDto>> MisReportesAsync(this HttpClient cliente) =>
+        (await cliente.GetFromJsonAsync<PaginaDto<ReporteDto>>("/api/reportes/mios"))!;
+
     public static async Task<int> CantidadPropiosAsync(this HttpClient cliente) =>
-        (await cliente.GetFromJsonAsync<PaginaDto<ReporteDto>>("/api/reportes/mios"))!.Total;
+        (await cliente.MisReportesAsync()).Total;
 
     // Detalle como JSON crudo, para verificar qué propiedades incluye o no la respuesta.
     public static async Task<JsonElement> DetalleJsonAsync(this HttpClient cliente, int id) =>
