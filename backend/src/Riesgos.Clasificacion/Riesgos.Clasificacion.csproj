@@ -14,4 +14,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <None Include="kb.md" CopyToOutputDirectory="PreserveNewest" />
+  </ItemGroup>
+
 </Project>
