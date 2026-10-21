@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Riesgos.Api.Auth;
 using Riesgos.Api.Endpoints;
 using Riesgos.Api.Infraestructura;
+using Riesgos.Clasificacion;
 using Riesgos.Core.Clasificacion;
 using Riesgos.Core.Persistencia;
 using Riesgos.Core.Servicios;
@@ -24,6 +25,9 @@ builder.Services.AddScoped<ServicioReportes>();
 
 builder.Services.AddSingleton<ColaClasificacion>();
 builder.Services.AddSingleton<IColaClasificacion>(sp => sp.GetRequiredService<ColaClasificacion>());
+builder.Services.AddScoped<ProcesadorClasificacion>();
+builder.Services.AddClasificadorClaude();
+builder.Services.AddHostedService<ClasificacionWorker>();
 
 builder.Services.AddAutenticacionPorSesion();
 builder.Services.AddProblemDetails();
@@ -69,6 +73,9 @@ static async Task PrepararBaseAsync(IServiceProvider servicios)
     }
 
     await SeedAdministrador.EjecutarAsync(servicios);
+
+    // Construye el clasificador al arrancar para advertir enseguida si falta API_KEY (research R12).
+    servicios.GetRequiredService<IClasificadorReportes>();
 }
 
 public partial class Program;
