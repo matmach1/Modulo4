@@ -10,6 +10,20 @@ public class RiesgosDbContext(DbContextOptions<RiesgosDbContext> options) : DbCo
 
     public DbSet<Sesion> Sesiones => Set<Sesion>();
 
+    public DbSet<Reporte> Reportes => Set<Reporte>();
+
+    // Cada modificación de un reporte cambia su token de concurrencia (research R7): si otra
+    // operación lo modificó antes, EF Core lanza DbUpdateConcurrencyException (HTTP 409).
+    public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+    {
+        foreach (var entrada in ChangeTracker.Entries<Reporte>().Where(e => e.State == EntityState.Modified))
+        {
+            entrada.Entity.RowVersion++;
+        }
+
+        return base.SaveChangesAsync(cancellationToken);
+    }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder) =>
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(RiesgosDbContext).Assembly);
 
