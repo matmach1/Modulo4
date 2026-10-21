@@ -143,7 +143,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Implementation for User Story 2
 
-- [ ] T052 [US2] Implementar `ProcesadorClasificacion.ProcesarAsync(TrabajoClasificacion, CancellationToken)` (descarta versión vieja, aplica timeout de 10 s con `CancellationTokenSource(TimeSpan, TimeProvider)`, actualización condicional `WHERE Id = @id AND VersionClasificacion = @v`, log de resultado/motivo/latencia sin el texto) en `backend/src/Riesgos.Core/Clasificacion/ProcesadorClasificacion.cs` (hace pasar T049)
+- [X] T052 [US2] Implementar `ProcesadorClasificacion.ProcesarAsync(TrabajoClasificacion, CancellationToken)` (descarta versión vieja, aplica timeout de 10 s con `CancellationTokenSource(TimeSpan, TimeProvider)`, actualización condicional `WHERE Id = @id AND VersionClasificacion = @v`, log de resultado/motivo/latencia sin el texto) en `backend/src/Riesgos.Core/Clasificacion/ProcesadorClasificacion.cs` (hace pasar T049)
 - [ ] T053 [US2] Implementar `ClasificacionWorker : BackgroundService` que consume la `ColaClasificacion` y llama al procesador (una excepción no detiene el worker) en `backend/src/Riesgos.Api/Infraestructura/ClasificacionWorker.cs`
 - [ ] T054 [P] [US2] Escribir el borrador de la base de conocimiento con definiciones de los 5 tipos, las 4 categorías (incluido cuándo usar "Otro") y criterios para Baja/Media/Alta/Crítica, en `backend/src/Riesgos.Clasificacion/kb.md` (copiado al output como contenido; pendiente de validación por Seguridad e Higiene)
 - [ ] T055 [P] [US2] Implementar `MapeadorRespuesta` (JSON ⇒ `ResultadoClasificacion`, igualdad exacta contra los textos del JSON Schema) en `backend/src/Riesgos.Clasificacion/MapeadorRespuesta.cs` (hace pasar T050)
