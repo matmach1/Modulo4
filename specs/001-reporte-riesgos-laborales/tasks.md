@@ -179,7 +179,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T069 [US3] Implementar `ServicioAdministracion.ListarAsync(page, size)` (por defecto 20, valida 1–100, orden `FechaCreacion DESC, Id DESC`, total) y `PanelAsync()` (solo estado Abierto) en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs`
 - [X] T070 [US3] Completar el armado del detalle para el administrador (acción sugerida, borrador, categoría sugerida y automática) en `backend/src/Riesgos.Api/Dtos/ReporteDetalleMapper.cs`
 - [X] T071 [US3] Implementar `GET /api/admin/reportes` y `GET /api/admin/panel` con la política `Administrador` en `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs` (hace pasar T061–T063)
-- [ ] T072 [P] [US3] Crear la página del panel (dos contadores que muestran 0 cuando no hay reportes, enlaces al listado; FR-033) en `frontend/src/pages/Panel.jsx`
+- [X] T072 [P] [US3] Crear la página del panel (dos contadores que muestran 0 cuando no hay reportes, enlaces al listado; FR-033) en `frontend/src/pages/Panel.jsx`
 - [ ] T073 [P] [US3] Crear la página del listado global (paginación con total, estado y criticidad por fila, estado vacío) en `frontend/src/pages/ListadoAdmin.jsx`
 - [ ] T074 [US3] Agregar al detalle, solo para admin, la acción sugerida destacada, ambas categorías cuando difieren y el borrador con botón "Copiar" en `frontend/src/components/DetalleAdmin.jsx` y `frontend/src/pages/DetalleReporte.jsx`
 - [ ] T075 [P] [US3] Tests de frontend del panel, el listado y el borrador en `frontend/src/__tests__/US3.test.jsx`

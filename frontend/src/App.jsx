@@ -5,6 +5,7 @@ import DetalleReporte from './pages/DetalleReporte';
 import Login from './pages/Login';
 import MisReportes from './pages/MisReportes';
 import NuevoReporte from './pages/NuevoReporte';
+import Panel from './pages/Panel';
 import Registro from './pages/Registro';
 
 function Inicio() {
@@ -45,6 +46,7 @@ export default function App() {
         <Route path="/registro" element={<Registro />} />
         <Route path="/mis-reportes" element={<RutaProtegida><MisReportes /></RutaProtegida>} />
         <Route path="/reportes/nuevo" element={<RutaProtegida><NuevoReporte /></RutaProtegida>} />
+        <Route path="/admin/panel" element={<RutaProtegida rol="Administrador"><Panel /></RutaProtegida>} />
         <Route path="/reportes/:id" element={<RutaProtegida><DetalleReporte /></RutaProtegida>} />
         <Route path="*" element={<RutaProtegida><p>Página no encontrada.</p></RutaProtegida>} />
       </Routes>
