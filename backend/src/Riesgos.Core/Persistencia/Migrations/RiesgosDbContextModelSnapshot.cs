@@ -17,6 +17,37 @@ namespace Riesgos.Core.Persistencia.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.32");
 
+            modelBuilder.Entity("Riesgos.Core.Dominio.EventoNotificacion", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("AsuntoBorrador")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("CuerpoBorrador")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("FechaActualizacion")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("FechaCreacion")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReporteId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReporteId")
+                        .IsUnique();
+
+                    b.ToTable("EventosNotificacion");
+                });
+
             modelBuilder.Entity("Riesgos.Core.Dominio.Reporte", b =>
                 {
                     b.Property<int>("Id")
@@ -159,6 +190,17 @@ namespace Riesgos.Core.Persistencia.Migrations
                         .IsUnique();
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("Riesgos.Core.Dominio.EventoNotificacion", b =>
+                {
+                    b.HasOne("Riesgos.Core.Dominio.Reporte", "Reporte")
+                        .WithOne()
+                        .HasForeignKey("Riesgos.Core.Dominio.EventoNotificacion", "ReporteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reporte");
                 });
 
             modelBuilder.Entity("Riesgos.Core.Dominio.Reporte", b =>

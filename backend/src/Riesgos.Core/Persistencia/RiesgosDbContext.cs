@@ -12,6 +12,8 @@ public class RiesgosDbContext(DbContextOptions<RiesgosDbContext> options) : DbCo
 
     public DbSet<Reporte> Reportes => Set<Reporte>();
 
+    public DbSet<EventoNotificacion> EventosNotificacion => Set<EventoNotificacion>();
+
     // Cada modificación de un reporte cambia su token de concurrencia (research R7): si otra
     // operación lo modificó antes, EF Core lanza DbUpdateConcurrencyException (HTTP 409).
     public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)

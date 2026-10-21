@@ -172,7 +172,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Implementation for User Story 3
 
-- [ ] T065 [P] [US3] Crear entidad `EventoNotificacion` (`ReporteId` único, `FechaCreacion`, `AsuntoBorrador`, `CuerpoBorrador`, `FechaActualizacion`) en `backend/src/Riesgos.Core/Dominio/EventoNotificacion.cs`, su configuración en `backend/src/Riesgos.Core/Persistencia/Configuraciones/EventoNotificacionConfig.cs` y la migración `EventosNotificacion`
+- [X] T065 [P] [US3] Crear entidad `EventoNotificacion` (`ReporteId` único, `FechaCreacion`, `AsuntoBorrador`, `CuerpoBorrador`, `FechaActualizacion`) en `backend/src/Riesgos.Core/Dominio/EventoNotificacion.cs`, su configuración en `backend/src/Riesgos.Core/Persistencia/Configuraciones/EventoNotificacionConfig.cs` y la migración `EventosNotificacion`
 - [ ] T066 [P] [US3] Implementar `AccionSugerida.Para(Criticidad)` y `GeneradorBorrador.Generar(Reporte, emailCreador)` (formato de asunto de [data-model.md](data-model.md)) en `backend/src/Riesgos.Core/Notificacion/AccionSugerida.cs` y `backend/src/Riesgos.Core/Notificacion/GeneradorBorrador.cs` (hace pasar T060)
 - [ ] T067 [US3] Crear el `EventoNotificacion` con su borrador en la misma transacción de `ServicioReportes.CrearAsync` en `backend/src/Riesgos.Core/Servicios/ServicioReportes.cs` (hace pasar T064)
 - [ ] T068 [US3] Regenerar (reemplazar) el borrador cuando el procesador guarda un resultado o una falla en `backend/src/Riesgos.Core/Clasificacion/ProcesadorClasificacion.cs` (FR-022)
