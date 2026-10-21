@@ -2,6 +2,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './auth/AuthContext';
 import RutaProtegida from './auth/RutaProtegida';
 import Login from './pages/Login';
+import Registro from './pages/Registro';
 
 function Inicio() {
   const { usuario, cargando } = useAuth();
@@ -38,6 +39,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Inicio />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/registro" element={<Registro />} />
         <Route path="*" element={<RutaProtegida><p>Página no encontrada.</p></RutaProtegida>} />
       </Routes>
     </>
