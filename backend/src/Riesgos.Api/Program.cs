@@ -22,6 +22,7 @@ builder.Services.AddSingleton(sp => new HashContrasena(
 builder.Services.AddScoped<ServicioSesiones>();
 builder.Services.AddScoped<ServicioCuentas>();
 builder.Services.AddScoped<ServicioReportes>();
+builder.Services.AddScoped<ServicioAdministracion>();
 
 builder.Services.AddSingleton<ColaClasificacion>();
 builder.Services.AddSingleton<IColaClasificacion>(sp => sp.GetRequiredService<ColaClasificacion>());
@@ -54,6 +55,7 @@ app.UseAuthorization();
 
 app.MapAuthEndpoints();
 app.MapReportesEndpoints();
+app.MapAdminEndpoints();
 
 app.Run();
 
