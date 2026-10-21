@@ -8,7 +8,7 @@ El sistema reconoce exactamente dos roles:
 - **Empleado (usuario común):** detecta un riesgo en su trabajo. Necesita reportarlo de forma simple (descripción, ubicación, fotos) y ver el estado de los reportes que él mismo creó.
 - **Administrador (Seguridad e Higiene):** recibe todos los reportes. Necesita verlos priorizados por criticidad, saber cuántos críticos siguen abiertos, registrar acciones correctivas y cerrarlos dejando constancia de lo realizado.
 
-Los permisos de cada rol quedan definidos por los RF que los referencian explícitamente y se verifican mediante los AC de control de acceso (AC-03, AC-04, AC-16, AC-36, AC-37, AC-38, AC-39, AC-42).
+Los permisos de cada rol quedan definidos por los RF que los referencian explícitamente y se verifican mediante los AC de control de acceso (AC-03, AC-04, AC-16, AC-36, AC-37, AC-38, AC-39, AC-42, AC-73).
 
 ## Objetivos
 Que cada reporte de un empleado, sea un riesgo laboral detectado o una observación, quede registrado en una base única, clasificado automáticamente por tipo y categoría, priorizado por criticidad y con trazabilidad completa (quién lo reportó, qué se hizo y quién lo cerró) hasta su cierre con una acción realizada.
@@ -21,6 +21,7 @@ La v1 no compromete métricas de éxito de producto (ver Fuera de Alcance).
 - RF-02b: El sistema debe paginar el listado de RF-02a según los parámetros `page` y `size` provistos por el cliente.
 - RF-02c: El sistema debe mostrar el estado (Abierto, En Progreso, Cerrado) de cada reporte en el listado de RF-02a.
 - RF-02d: El sistema debe ordenar el listado de RF-02a por fecha de creación descendente.
+- RF-02e: El sistema debe permitir que el administrador pida, en lugar del orden de RF-02d, el listado de RF-02a ordenado por criticidad (Crítica, Alta, Media, Baja y al final "Pendiente de clasificación"), con fecha de creación descendente dentro de cada nivel.
 - RF-03: El sistema debe permitir que el usuario común liste únicamente los reportes que él mismo creó.
 - RF-04: El sistema debe clasificar automáticamente cada reporte, al momento de crearse, en una de las siguientes categorías: Problema de infraestructura, Riesgo eléctrico, Uso de elementos de protección personal u Otro, utilizando Claude API con la base de conocimiento `kb.md` como contexto.
 - RF-05: El sistema debe conservar la clasificación automática de categoría (RF-04) como definitiva cuando la categoría sugerida por el usuario (RF-01) difiera de ella.
@@ -60,6 +61,8 @@ La v1 no compromete métricas de éxito de producto (ver Fuera de Alcance).
 - RF-39: El sistema debe rechazar el registro (RF-14) cuando el email no tenga un formato válido.
 - RF-40: El sistema debe exigir que la contraseña tenga al menos 8 caracteres, tanto en el registro (RF-14) como en el cambio de contraseña (RF-15).
 - RF-41: El sistema debe limitar la descripción de un reporte a 2.000 caracteres y la ubicación a 200 caracteres, tanto al crearlo (RF-01) como al editarlo (RF-10).
+- RF-42: El sistema debe permitir que un usuario autenticado cierre su sesión, invalidándola en el servidor de inmediato.
+- RF-43: El sistema debe permitir ver o descargar una imagen adjunta (RF-20) únicamente a quien puede ver el reporte al que pertenece (RF-31).
 
 ## Requerimientos No Funcionales
 - RNF-01: La clasificación de tipo, categoría y criticidad de un reporte debe obtenerse en una única llamada a Claude API, con una latencia < 3 s (p95) medida sobre esa llamada.
@@ -68,6 +71,8 @@ La v1 no compromete métricas de éxito de producto (ver Fuera de Alcance).
 - RNF-04: La API key del modelo no debe estar en el código; se lee de la variable de entorno `API_KEY`.
 - RNF-05: Las contraseñas deben almacenarse con hash seguro (bcrypt/argon2), nunca en texto plano.
 - RNF-06: La sesión de usuario debe expirar tras 24 h de inactividad.
+- RNF-07: Toda comunicación con la aplicación debe ser por HTTPS; las solicitudes HTTP se redirigen a HTTPS y se envía la cabecera HSTS (salvo en desarrollo local).
+- RNF-08: La clasificación de RF-04, RF-07 y RF-25 se ejecuta en segundo plano: crear o editar un reporte responde sin esperarla, con el reporte en "Pendiente de clasificación" hasta que llega el resultado.
 
 ## Criterios de Aceptación
 - AC-01 (RF-01): Dada una descripción vacía, cuando se intenta crear el reporte, entonces el sistema responde HTTP 400 y no lo crea.
@@ -109,8 +114,8 @@ La v1 no compromete métricas de éxito de producto (ver Fuera de Alcance).
 - AC-37 (RF-22): Dado un usuario común autenticado, cuando intenta registrar una acción correctiva, entonces el sistema responde HTTP 403. (control de acceso)
 - AC-38 (RF-24, RF-38): Dado un usuario común autenticado, cuando intenta acceder al panel principal de administrador, entonces el sistema responde HTTP 403. (control de acceso)
 - AC-39 (RF-27): Dado un usuario común que consulta el detalle de un reporte propio, cuando se muestra el detalle, entonces la respuesta no incluye el borrador de mail. (control de acceso)
-- AC-40 (RF-25): Dado un reporte recién creado, cuando se consulta su detalle, entonces su tipo es uno de: Acto inseguro, Condición insegura, Casi accidente, Riesgo operativo u Otro.
-- AC-41 (RF-26, RF-27): Dado un reporte recién creado, cuando el administrador consulta su detalle, entonces se muestra un borrador de mail cuyo asunto contiene la categoría y la criticidad, y cuyo cuerpo contiene descripción, ubicación, fecha de creación y usuario creador.
+- AC-40 (RF-25): Dado un reporte recién creado cuya clasificación en segundo plano (RNF-08) terminó con éxito, cuando se consulta su detalle, entonces su tipo es uno de: Acto inseguro, Condición insegura, Casi accidente, Riesgo operativo u Otro.
+- AC-41 (RF-26, RF-27): Dado un reporte recién creado cuya clasificación en segundo plano (RNF-08) terminó, cuando el administrador consulta su detalle, entonces se muestra un borrador de mail cuyo asunto contiene la categoría y la criticidad, y cuyo cuerpo contiene descripción, ubicación, fecha de creación y usuario creador.
 - AC-42 (RF-29): Dado un usuario recién registrado, cuando intenta acceder al endpoint de listado global de reportes, entonces el sistema responde HTTP 403. (control de acceso)
 - AC-43 (RF-28): Dado un reporte cuya categoría sugerida difiere de la automática, cuando el administrador consulta su detalle, entonces se muestran ambas categorías.
 - AC-44 (RF-30): Dada una base de datos vacía y credenciales de administrador provistas por variables de entorno, cuando se inicia la aplicación, entonces es posible autenticarse con esas credenciales y acceder al listado global de reportes.
@@ -139,6 +144,12 @@ La v1 no compromete métricas de éxito de producto (ver Fuera de Alcance).
 - AC-67 (RF-41): Dada una descripción de más de 2.000 caracteres, cuando se intenta crear el reporte, entonces el sistema responde HTTP 400, no lo crea y no realiza ninguna llamada a Claude API (verificable con un cliente del modelo simulado).
 - AC-68 (RF-41): Dada una ubicación de más de 200 caracteres, cuando se intenta crear el reporte, entonces el sistema responde HTTP 400 y no lo crea.
 - AC-69 (RF-41): Dado un reporte Abierto del usuario autenticado, cuando lo edita con una descripción de más de 2.000 caracteres, entonces el sistema responde HTTP 400, el reporte no cambia y no se realiza ninguna llamada a Claude API.
+- AC-70 (RF-02e): Dados reportes con distintas criticidades, cuando el administrador pide el listado ordenado por criticidad, entonces recibe primero los Críticos, luego Alta, Media, Baja y al final "Pendiente de clasificación", y dentro de cada nivel del más reciente al más antiguo.
+- AC-71 (RF-02e): Dado un criterio de orden distinto de fecha o criticidad, cuando el administrador pide el listado, entonces el sistema responde HTTP 400.
+- AC-72 (RF-42): Dado un usuario que cerró su sesión, cuando repite una solicitud con esa misma sesión, entonces el sistema responde HTTP 401.
+- AC-73 (RF-43): Dada una imagen adjunta a un reporte del usuario A, cuando el usuario B (común) intenta verla, entonces el sistema responde HTTP 403; cuando lo intenta alguien no autenticado, responde HTTP 401. (control de acceso)
+- AC-74 (RNF-07): Dado el entorno de producción, cuando llega una solicitud HTTP, entonces el sistema la redirige a HTTPS, y las respuestas HTTPS incluyen la cabecera Strict-Transport-Security.
+- AC-75 (RNF-08): Dado un cliente de Claude API simulado que todavía no respondió, cuando un usuario crea un reporte válido, entonces el sistema responde HTTP 201 de inmediato con tipo, categoría y criticidad "Pendiente de clasificación".
 
 ## Fuera de Alcance
 - CRM completo.
@@ -159,6 +170,8 @@ La v1 no compromete métricas de éxito de producto (ver Fuera de Alcance).
 - Exportes y reportes estadísticos más allá del contador de RF-24.
 - Métricas de éxito de producto en v1.
 - Reintento automático o manual de la clasificación de reportes "Pendiente de clasificación" (RF-35).
+- Filtros y búsqueda en los listados (por estado, criticidad, fecha o texto).
+- Alta de administradores adicionales desde la aplicación: en v1 existe un único administrador (RF-30).
 
 (La autenticación con dos roles (usuario común y administrador) sí forma parte del alcance — ver Personas y RF-12.)
 
