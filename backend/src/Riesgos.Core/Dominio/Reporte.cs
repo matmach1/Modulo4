@@ -1,9 +1,12 @@
+using Riesgos.Core.Validacion;
+
 namespace Riesgos.Core.Dominio;
 
 public class Reporte
 {
     public const int MaxDescripcion = 2000;
     public const int MaxUbicacion = 200;
+    public const int MaxTextoGestion = 1000;
 
     public int Id { get; set; }
 
@@ -59,7 +62,31 @@ public class Reporte
         VersionClasificacion++;
     }
 
-    // Esqueleto: se implementa en T079.
-    public void CambiarEstado(EstadoReporte destino, int adminId, DateTimeOffset ahora, string? accionRealizada = null, string? observacionCierre = null) =>
-        throw new NotImplementedException();
+    // Único flujo válido: Abierto → En Progreso → Cerrado (FR-027). Cualquier otra transición,
+    // incluida al mismo estado, es un conflicto de estado. La clasificación no la condiciona.
+    public void CambiarEstado(EstadoReporte destino, int adminId, DateTimeOffset ahora, string? accionRealizada = null, string? observacionCierre = null)
+    {
+        switch (Estado, destino)
+        {
+            case (EstadoReporte.Abierto, EstadoReporte.EnProgreso):
+                Estado = EstadoReporte.EnProgreso;
+                FechaInicioProgreso = ahora;
+                UsuarioInicioProgresoId = adminId;
+                break;
+
+            case (EstadoReporte.EnProgreso, EstadoReporte.Cerrado):
+                // Se valida todo antes de modificar: si falta un texto, el reporte sigue En Progreso.
+                var accion = Texto.Validar(accionRealizada, "accionRealizada", MaxTextoGestion);
+                var observacion = Texto.Validar(observacionCierre, "observacionCierre", MaxTextoGestion);
+                Estado = EstadoReporte.Cerrado;
+                AccionRealizada = accion;
+                ObservacionCierre = observacion;
+                FechaCierre = ahora;
+                UsuarioCierreId = adminId;
+                break;
+
+            default:
+                throw new Conflicto($"No se puede pasar un reporte de {Estado} a {destino}.");
+        }
+    }
 }

@@ -202,7 +202,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Implementation for User Story 4
 
-- [ ] T079 [US4] Implementar `Reporte.PasarAEnProgreso(adminId, ahora)` y `Reporte.Cerrar(adminId, accionRealizada, observacion, ahora)` con validación de transiciones y largos (1.000) en `backend/src/Riesgos.Core/Dominio/Reporte.cs` (hace pasar T076)
+- [X] T079 [US4] Implementar `Reporte.PasarAEnProgreso(adminId, ahora)` y `Reporte.Cerrar(adminId, accionRealizada, observacion, ahora)` con validación de transiciones y largos (1.000) en `backend/src/Riesgos.Core/Dominio/Reporte.cs` (hace pasar T076)
 - [ ] T080 [P] [US4] Crear entidad `AccionCorrectiva` (`ReporteId`, `Descripcion` string(1000), `Fecha`, `ResponsableId`) en `backend/src/Riesgos.Core/Dominio/AccionCorrectiva.cs`, su configuración y la migración `AccionesCorrectivas`
 - [ ] T081 [US4] Implementar `ServicioAdministracion.CambiarEstadoAsync` y `RegistrarAccionAsync` (rechaza reportes Cerrados; incrementa `RowVersion`) en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs`
 - [ ] T082 [US4] Implementar `POST /api/admin/reportes/{id}/estado` y `POST /api/admin/reportes/{id}/acciones` en `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs`, e incluir inicio de progreso, cierre y acciones (ordenadas por fecha asc.) en el detalle de ambos roles en `backend/src/Riesgos.Api/Dtos/ReporteDetalleMapper.cs` (hace pasar T077–T078)
