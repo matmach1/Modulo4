@@ -1,5 +1,6 @@
 using Riesgos.Api.Auth;
 using Riesgos.Api.Dtos;
+using Riesgos.Core.Dominio;
 using Riesgos.Core.Servicios;
 
 namespace Riesgos.Api.Endpoints;
@@ -14,7 +15,7 @@ public static class ReportesEndpoints
         {
             var usuario = http.User.UsuarioActual();
             var reporte = await reportes.CrearAsync(usuario, request.Descripcion, request.Ubicacion, request.CategoriaSugerida, ct);
-            return Results.Created($"/api/reportes/{reporte.Id}", ReporteDetalleMapper.Detalle(reporte, usuario));
+            return Results.Created($"/api/reportes/{reporte.Id}", await DetalleAsync(reporte, usuario, reportes, ct));
         });
 
         grupo.MapGet("/mios", async (int? page, int? size, ServicioReportes reportes, HttpContext http, CancellationToken ct) =>
@@ -23,9 +24,12 @@ public static class ReportesEndpoints
         grupo.MapGet("/{id:int}", async (int id, ServicioReportes reportes, HttpContext http, CancellationToken ct) =>
         {
             var usuario = http.User.UsuarioActual();
-            return Results.Ok(ReporteDetalleMapper.Detalle(await reportes.ObtenerDetalleAsync(id, usuario, ct), usuario));
+            return Results.Ok(await DetalleAsync(await reportes.ObtenerDetalleAsync(id, usuario, ct), usuario, reportes, ct));
         });
 
         return grupo;
     }
+
+    internal static async Task<object> DetalleAsync(Reporte reporte, UsuarioActual usuario, ServicioReportes reportes, CancellationToken ct) =>
+        ReporteDetalleMapper.Detalle(reporte, usuario, await reportes.ObtenerEventoAsync(reporte.Id, usuario, ct));
 }

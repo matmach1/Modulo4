@@ -177,7 +177,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T067 [US3] Crear el `EventoNotificacion` con su borrador en la misma transacción de `ServicioReportes.CrearAsync` en `backend/src/Riesgos.Core/Servicios/ServicioReportes.cs` (hace pasar T064)
 - [X] T068 [US3] Regenerar (reemplazar) el borrador cuando el procesador guarda un resultado o una falla en `backend/src/Riesgos.Core/Clasificacion/ProcesadorClasificacion.cs` (FR-022)
 - [X] T069 [US3] Implementar `ServicioAdministracion.ListarAsync(page, size)` (por defecto 20, valida 1–100, orden `FechaCreacion DESC, Id DESC`, total) y `PanelAsync()` (solo estado Abierto) en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs`
-- [ ] T070 [US3] Completar el armado del detalle para el administrador (acción sugerida, borrador, categoría sugerida y automática) en `backend/src/Riesgos.Api/Dtos/ReporteDetalleMapper.cs`
+- [X] T070 [US3] Completar el armado del detalle para el administrador (acción sugerida, borrador, categoría sugerida y automática) en `backend/src/Riesgos.Api/Dtos/ReporteDetalleMapper.cs`
 - [ ] T071 [US3] Implementar `GET /api/admin/reportes` y `GET /api/admin/panel` con la política `Administrador` en `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs` (hace pasar T061–T063)
 - [ ] T072 [P] [US3] Crear la página del panel (dos contadores que muestran 0 cuando no hay reportes, enlaces al listado; FR-033) en `frontend/src/pages/Panel.jsx`
 - [ ] T073 [P] [US3] Crear la página del listado global (paginación con total, estado y criticidad por fila, estado vacío) en `frontend/src/pages/ListadoAdmin.jsx`

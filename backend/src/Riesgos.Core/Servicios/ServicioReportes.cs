@@ -72,6 +72,12 @@ public sealed class ServicioReportes(RiesgosDbContext db, IColaClasificacion col
         return reporte;
     }
 
+    // El borrador de mail es solo para el administrador (FR-023).
+    public async Task<EventoNotificacion?> ObtenerEventoAsync(int reporteId, UsuarioActual usuario, CancellationToken ct = default) =>
+        usuario.EsAdministrador
+            ? await db.EventosNotificacion.AsNoTracking().SingleOrDefaultAsync(e => e.ReporteId == reporteId, ct)
+            : null;
+
     public static void VerificarAcceso(Reporte reporte, UsuarioActual usuario)
     {
         if (!usuario.EsAdministrador && reporte.CreadorId != usuario.Id)
