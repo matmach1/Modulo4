@@ -235,7 +235,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 ### Implementation for User Story 5
 
 - [X] T092 [US5] Implementar `ServicioReportes.EditarAsync` (solo el creador, solo en Abierto, valida antes de todo, guarda, pone `Pendiente`, incrementa `VersionClasificacion`, regenera el borrador con "Pendiente de clasificación" y encola) en `backend/src/Riesgos.Core/Servicios/ServicioReportes.cs`
-- [ ] T093 [US5] Implementar `PUT /api/reportes/{id}` en `backend/src/Riesgos.Api/Endpoints/ReportesEndpoints.cs` (hace pasar T088)
+- [X] T093 [US5] Implementar `PUT /api/reportes/{id}` en `backend/src/Riesgos.Api/Endpoints/ReportesEndpoints.cs` (hace pasar T088)
 - [ ] T094 [P] [US5] Crear entidad `ImagenAdjunta` (`ReporteId`, `NombreArchivo` string(64), `TipoContenido`, `TamanoBytes`, `FechaCarga`) en `backend/src/Riesgos.Core/Dominio/ImagenAdjunta.cs`, su configuración y la migración `ImagenesAdjuntas`
 - [ ] T095 [P] [US5] Implementar `ValidadorImagen` (firma de bytes + extensión + tamaño) en `backend/src/Riesgos.Core/Imagenes/ValidadorImagen.cs` (hace pasar T089)
 - [ ] T096 [US5] Implementar `ServicioImagenes.AdjuntarAsync` (creador, estado Abierto, conteo < 5 e inserción en una transacción, guarda en `data/imagenes/{guid}.{ext}` configurable) y `ObtenerAsync` (verificación de acceso igual que el reporte) en `backend/src/Riesgos.Core/Servicios/ServicioImagenes.cs`

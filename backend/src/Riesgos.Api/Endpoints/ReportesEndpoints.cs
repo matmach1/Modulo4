@@ -27,6 +27,13 @@ public static class ReportesEndpoints
             return Results.Ok(await DetalleAsync(await reportes.ObtenerDetalleAsync(id, usuario, ct), usuario, reportes, ct));
         });
 
+        grupo.MapPut("/{id:int}", async (int id, EditarReporteRequest request, ServicioReportes reportes, HttpContext http, CancellationToken ct) =>
+        {
+            var usuario = http.User.UsuarioActual();
+            var reporte = await reportes.EditarAsync(id, usuario, request.Descripcion, request.Ubicacion, ct);
+            return Results.Ok(await DetalleAsync(reporte, usuario, reportes, ct));
+        });
+
         return grupo;
     }
 

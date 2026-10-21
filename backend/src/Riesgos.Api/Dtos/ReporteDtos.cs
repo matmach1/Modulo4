@@ -6,6 +6,8 @@ public sealed record RegistroRequest(string? Email, string? Password);
 
 public sealed record CrearReporteRequest(string? Descripcion, string? Ubicacion, Categoria? CategoriaSugerida);
 
+public sealed record EditarReporteRequest(string? Descripcion, string? Ubicacion);
+
 public sealed record PaginaResponse<T>(IReadOnlyList<T> Items, int Page, int Size, int Total);
 
 public sealed record ReporteResumen(
