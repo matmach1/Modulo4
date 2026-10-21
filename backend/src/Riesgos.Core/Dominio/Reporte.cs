@@ -58,4 +58,8 @@ public class Reporte
         Criticidad = Criticidad.Pendiente;
         VersionClasificacion++;
     }
+
+    // Esqueleto: se implementa en T079.
+    public void CambiarEstado(EstadoReporte destino, int adminId, DateTimeOffset ahora, string? accionRealizada = null, string? observacionCierre = null) =>
+        throw new NotImplementedException();
 }
