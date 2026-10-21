@@ -55,5 +55,11 @@ public static class ReporteDetalleMapper
             Cierre = r.FechaCierre is { } cierre && r.UsuarioCierre is { } quienCierra
                 ? new CierreResponse(cierre, quienCierra.Email, r.AccionRealizada!, r.ObservacionCierre!)
                 : null,
+            Acciones = r.Acciones
+                .OrderBy(a => a.Fecha).ThenBy(a => a.Id)
+                .Select(Accion)
+                .ToList(),
         };
+
+    public static AccionResponse Accion(AccionCorrectiva a) => new(a.Id, a.Descripcion, a.Fecha, a.Responsable.Email);
 }

@@ -56,6 +56,7 @@ public sealed class ServicioAdministracion(RiesgosDbContext db, TimeProvider tie
             ResponsableId = admin.Id,
         };
         db.AccionesCorrectivas.Add(accion);
+        await db.Entry(accion).Reference(x => x.Responsable).LoadAsync(ct);
 
         // Marca el reporte como modificado para que una acción y un cierre simultáneos choquen.
         db.Entry(reporte).Property(r => r.RowVersion).IsModified = true;

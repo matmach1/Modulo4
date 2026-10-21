@@ -66,6 +66,8 @@ public sealed class ServicioReportes(RiesgosDbContext db, IColaClasificacion col
             .Include(r => r.Creador)
             .Include(r => r.UsuarioInicioProgreso)
             .Include(r => r.UsuarioCierre)
+            .Include(r => r.Acciones).ThenInclude(a => a.Responsable)
+            .AsSplitQuery()
             .SingleOrDefaultAsync(r => r.Id == id, ct)
             ?? throw new NoEncontrado("El reporte no existe.");
         VerificarAcceso(reporte, usuario);

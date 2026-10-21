@@ -25,6 +25,12 @@ public sealed record CierreResponse(DateTimeOffset Fecha, string UsuarioEmail, s
 
 public sealed record BorradorMailResponse(string Asunto, string Cuerpo);
 
+public sealed record AccionResponse(int Id, string Descripcion, DateTimeOffset Fecha, string ResponsableEmail);
+
+public sealed record CambiarEstadoRequest(EstadoReporte? Estado, string? AccionRealizada, string? ObservacionCierre);
+
+public sealed record RegistrarAccionRequest(string? Descripcion);
+
 // Detalle común a ambos roles. El administrador recibe ReporteDetalleAdmin; el empleado nunca
 // recibe la acción sugerida ni el borrador de mail, ni siquiera vacíos (FR-011, AC-39).
 public record ReporteDetalle
@@ -52,6 +58,8 @@ public record ReporteDetalle
     public MarcaUsuario? InicioProgreso { get; init; }
 
     public CierreResponse? Cierre { get; init; }
+
+    public IReadOnlyList<AccionResponse> Acciones { get; init; } = [];
 }
 
 public sealed record ReporteDetalleAdmin : ReporteDetalle
