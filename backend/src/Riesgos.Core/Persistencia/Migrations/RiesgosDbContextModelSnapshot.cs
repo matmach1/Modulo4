@@ -17,6 +17,35 @@ namespace Riesgos.Core.Persistencia.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.32");
 
+            modelBuilder.Entity("Riesgos.Core.Dominio.AccionCorrectiva", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Descripcion")
+                        .IsRequired()
+                        .HasMaxLength(1000)
+                        .HasColumnType("TEXT");
+
+                    b.Property<long>("Fecha")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ReporteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("ResponsableId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ResponsableId");
+
+                    b.HasIndex("ReporteId", "Fecha");
+
+                    b.ToTable("AccionesCorrectivas", (string)null);
+                });
+
             modelBuilder.Entity("Riesgos.Core.Dominio.EventoNotificacion", b =>
                 {
                     b.Property<int>("Id")
@@ -192,6 +221,25 @@ namespace Riesgos.Core.Persistencia.Migrations
                     b.ToTable("Usuarios");
                 });
 
+            modelBuilder.Entity("Riesgos.Core.Dominio.AccionCorrectiva", b =>
+                {
+                    b.HasOne("Riesgos.Core.Dominio.Reporte", "Reporte")
+                        .WithMany("Acciones")
+                        .HasForeignKey("ReporteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Riesgos.Core.Dominio.Usuario", "Responsable")
+                        .WithMany()
+                        .HasForeignKey("ResponsableId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Reporte");
+
+                    b.Navigation("Responsable");
+                });
+
             modelBuilder.Entity("Riesgos.Core.Dominio.EventoNotificacion", b =>
                 {
                     b.HasOne("Riesgos.Core.Dominio.Reporte", "Reporte")
@@ -237,6 +285,11 @@ namespace Riesgos.Core.Persistencia.Migrations
                         .IsRequired();
 
                     b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Riesgos.Core.Dominio.Reporte", b =>
+                {
+                    b.Navigation("Acciones");
                 });
 #pragma warning restore 612, 618
         }

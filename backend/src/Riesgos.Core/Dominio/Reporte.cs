@@ -51,6 +51,8 @@ public class Reporte
 
     public Usuario? UsuarioCierre { get; set; }
 
+    public List<AccionCorrectiva> Acciones { get; set; } = [];
+
     // Token de concurrencia optimista (research R7).
     public int RowVersion { get; set; }
 
