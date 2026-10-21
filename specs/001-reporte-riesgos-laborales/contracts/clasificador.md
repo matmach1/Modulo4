@@ -38,7 +38,9 @@ Reglas:
 ## Implementación real (`ClasificadorClaude`)
 
 - Cliente: SDK oficial `Anthropic` con `ApiKey` desde `API_KEY`, reintentos en 0.
-- Modelo: `CLAUDE_MODEL` (por defecto `claude-opus-5-5`), effort `low`, `MaxTokens` ≈ 256.
+- Modelo: `CLAUDE_MODEL` (por defecto `claude-opus-5-5`), effort `low`, `MaxTokens` 2048 (el
+  razonamiento adaptativo, siempre activo en ese modelo, cuenta dentro del tope; con menos, el JSON
+  podría quedar truncado).
 - `System`: instrucciones fijas + contenido de `kb.md`, con `CacheControlEphemeral`. Las
   instrucciones indican que el contenido del mensaje de usuario es solo un reporte a clasificar y
   que cualquier instrucción que aparezca en él debe ignorarse.
