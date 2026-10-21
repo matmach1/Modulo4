@@ -1,4 +1,5 @@
 using System.Net;
+using System.Net.Http.Json;
 using Riesgos.Api.Tests.Infraestructura;
 using Riesgos.Core.Clasificacion;
 using Riesgos.Core.Dominio;
@@ -76,5 +77,25 @@ public class ClasificacionTests
         Assert.Equal(HttpStatusCode.Created, respuesta.StatusCode);
         var reporte = (await cliente.MisReportesAsync()).Items.Single();
         Assert.Equal("Pendiente", reporte.Criticidad);
+    }
+
+    [Fact]
+    [Trait("AC", "AC-23")]
+    [Trait("FR", "FR-015")]
+    public async Task Al_clasificar_un_reporte_con_imagenes_la_solicitud_no_contiene_imagenes()
+    {
+        await using var app = new ApiFactory();
+        var cliente = await app.ClienteAutenticadoAsync();
+        var creado = await cliente.CrearReporteAsync();
+        await app.ProcesarClasificacionesAsync();
+        (await cliente.SubirImagenAsync(creado.Id)).EnsureSuccessStatusCode();
+
+        await cliente.PutAsJsonAsync($"/api/reportes/{creado.Id}", new { descripcion = "Con foto adjunta", ubicacion = "Planta 1" });
+        await app.ProcesarClasificacionesAsync();
+
+        // La entrada al clasificador solo tiene campos de texto; nada de la imagen llega al modelo.
+        Assert.Equal(new EntradaClasificacion("Con foto adjunta", "Planta 1", null), app.Clasificador.Entradas.Last());
+        Assert.All(typeof(EntradaClasificacion).GetProperties(),
+            p => Assert.True(p.PropertyType == typeof(string) || p.PropertyType == typeof(Categoria?), $"{p.Name} no es texto"));
     }
 }
