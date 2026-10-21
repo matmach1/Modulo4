@@ -18,7 +18,7 @@ del servidor, frontend React 18 + Vite 5. La integración con Claude vive aislad
 
 **Language/Version**: C# 12 / .NET 8 (backend); JavaScript (ES2022) con React 18 sobre Node 20 LTS (frontend)
 
-**Primary Dependencies**: ASP.NET Core 8 (minimal APIs), EF Core 8 + `Microsoft.EntityFrameworkCore.Sqlite`, `BCrypt.Net-Next`, SDK oficial `Anthropic` (C#); React 18, Vite 5, `react-router-dom`
+**Primary Dependencies**: ASP.NET Core 8 Web API (minimal APIs), EF Core 8 + `Microsoft.EntityFrameworkCore.Sqlite`, `BCrypt.Net-Next`, SDK oficial `Anthropic` (C#); React 18, Vite 5, `react-router-dom`
 
 **Storage**: SQLite (archivo `data/riesgos.db`) vía EF Core con migraciones; imágenes en disco (`data/imagenes/`), fuera de la carpeta pública
 
@@ -47,6 +47,25 @@ del servidor, frontend React 18 + Vite 5. La integración con Claude vive aislad
 | V. Sin secretos en el código | `API_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` por entorno; BCrypt; `.env` en `.gitignore`; chequeo AC-46 en quickstart. | ✅ |
 | Alcance: nada fuera del PRD | Dos funcionalidades de la spec no tienen RF/AC en el PRD: **cerrar sesión** (FR-005a) y **orden por criticidad** del listado (FR-024). | ⚠️ Condicional (ver Complexity Tracking) |
 | Flujo: trazabilidad RF/AC | Tabla endpoint → AC en [contracts/api.md](contracts/api.md). | ✅ |
+
+### Chequeo contra `AGENTS.md`
+
+La constitución define `AGENTS.md` como guía operativa y exige que se mantenga consistente.
+
+| `AGENTS.md` | Plan | Estado |
+|-------------|------|--------|
+| Backend .NET 8, ASP.NET Core Web API | ASP.NET Core 8 Web API con minimal APIs (`Riesgos.Api`) | ✅ |
+| SQLite vía EF Core | EF Core 8 + SQLite, migraciones | ✅ |
+| Tests backend xUnit con `dotnet test` | xUnit en `backend/tests/`, `dotnet test` desde `backend/` sobre `Riesgos.sln` | ✅ |
+| Frontend React 18 + Vite 5, Node 20 LTS | Igual; tests con Vitest vía `npm test` | ✅ |
+| Clasificación con Claude API | SDK oficial aislado en `Riesgos.Clasificacion` | ✅ |
+| `dotnet run --project src/Riesgos.Api` desde `backend/` | Ruta `backend/src/Riesgos.Api` | ✅ |
+| `npm install` / `npm run dev` / `npm test` desde `frontend/` | Scripts `dev`, `build`, `test` en `frontend/package.json` (T004) | ✅ |
+| API key solo desde `API_KEY` | `ClasificadorClaude` lee `API_KEY` y la pasa explícitamente al SDK (R3) | ✅ |
+| Contraseñas con bcrypt/argon2 | BCrypt (`BCrypt.Net-Next`, work factor 12) | ✅ |
+| Imágenes no son input del modelo | `EntradaClasificacion` solo tiene texto | ✅ |
+| Sin CRM, multi-canal real, RBAC configurable, multi-tenant ni envío real de mails | Nada de eso en el diseño; el borrador de mail solo se muestra | ✅ |
+| Variables de entorno documentadas | `API_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` y `CLAUDE_MODEL` documentadas en `AGENTS.md` | ✅ |
 
 **Resultado del gate (pre y post diseño)**: pasa con una condición. El plan puede seguir a
 `/speckit-tasks`, pero las tareas de cerrar sesión y de orden por criticidad quedan bloqueadas

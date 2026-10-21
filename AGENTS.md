@@ -26,6 +26,15 @@ npm run dev
 npm test
 ```
 
+## Variables de entorno
+Nunca se versionan con valores reales (`.env` va en `.gitignore`).
+
+| Variable | Uso |
+|----------|-----|
+| `API_KEY` | Clave de Claude API (RNF-04). Sin ella la app arranca, pero los reportes quedan "Pendiente de clasificación". |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Administrador inicial (RF-30). Obligatorias si la base no tiene administrador; si ya existe, no lo modifican. |
+| `CLAUDE_MODEL` | Opcional. Modelo de clasificación; por defecto `claude-opus-5-5`. |
+
 ## Qué NO hacer
 - No hardcodear la API key de Claude en el código: siempre desde la variable de entorno `API_KEY` (RNF-04).
 - No guardar contraseñas en texto plano: siempre hash seguro con bcrypt/argon2 (RNF-05).

@@ -285,7 +285,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T112 [P] Crear `datasets/README.md` con el formato esperado del dataset, la regla de versionado y que debe correrse T111 al cambiar modelo, prompt o `kb.md`
 - [ ] T113 [P] Revisar los logs: que la clasificación, los logins fallidos y los accesos denegados se registren sin texto de reportes, contraseñas, tokens ni API key (R13), en `backend/src/Riesgos.Api/` y `backend/src/Riesgos.Core/`
 - [ ] T114 [P] Verificar que cada AC del PRD (AC-01…AC-69, salvo AC-05/AC-45/AC-46 que se validan fuera de `dotnet test`) tiene al menos un test con su `Trait`; agregar los que falten en `backend/tests/`
-- [ ] T115 [P] Actualizar `AGENTS.md` con las variables de entorno (`API_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD`, `CLAUDE_MODEL`) y la herramienta de evaluación
+- [ ] T115 [P] Actualizar `AGENTS.md` con cómo correr la herramienta de evaluación (las variables de entorno ya están documentadas)
 - [ ] T116 Ejecutar la validación completa de [quickstart.md](quickstart.md): `dotnet test`, `npm test`, recorrido manual y chequeo de secretos (AC-46)
 
 ---
