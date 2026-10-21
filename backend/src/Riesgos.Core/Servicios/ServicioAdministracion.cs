@@ -1,13 +1,14 @@
 using Microsoft.EntityFrameworkCore;
 using Riesgos.Core.Dominio;
 using Riesgos.Core.Persistencia;
+using Riesgos.Core.Validacion;
 
 namespace Riesgos.Core.Servicios;
 
 public sealed record Panel(int CriticosAbiertos, int PendientesAbiertos);
 
 // Operaciones exclusivas del administrador (FR-030); la API las protege con la política de rol.
-public sealed class ServicioAdministracion(RiesgosDbContext db)
+public sealed class ServicioAdministracion(RiesgosDbContext db, TimeProvider tiempo)
 {
     public async Task<Pagina<Reporte>> ListarAsync(int? page, int? size, CancellationToken ct = default)
     {
@@ -29,4 +30,39 @@ public sealed class ServicioAdministracion(RiesgosDbContext db)
             await abiertos.CountAsync(r => r.Criticidad == Criticidad.Critica, ct),
             await abiertos.CountAsync(r => r.Criticidad == Criticidad.Pendiente, ct));
     }
+
+    // Cambiar el estado no dispara una clasificación (FR-017). Si otra operación modificó el
+    // reporte entre la lectura y el guardado, EF Core lanza un error de concurrencia (409).
+    public async Task CambiarEstadoAsync(int reporteId, EstadoReporte destino, string? accionRealizada, string? observacionCierre, UsuarioActual admin, CancellationToken ct = default)
+    {
+        var reporte = await ObtenerAsync(reporteId, ct);
+        reporte.CambiarEstado(destino, admin.Id, tiempo.GetUtcNow(), accionRealizada, observacionCierre);
+        await db.SaveChangesAsync(ct);
+    }
+
+    public async Task<AccionCorrectiva> RegistrarAccionAsync(int reporteId, string? descripcion, UsuarioActual admin, CancellationToken ct = default)
+    {
+        var reporte = await ObtenerAsync(reporteId, ct);
+        if (reporte.Estado == EstadoReporte.Cerrado)
+        {
+            throw new Conflicto("No se pueden registrar acciones en un reporte Cerrado.");
+        }
+
+        var accion = new AccionCorrectiva
+        {
+            ReporteId = reporte.Id,
+            Descripcion = Texto.Validar(descripcion, "descripcion", Reporte.MaxTextoGestion),
+            Fecha = tiempo.GetUtcNow(),
+            ResponsableId = admin.Id,
+        };
+        db.AccionesCorrectivas.Add(accion);
+
+        // Marca el reporte como modificado para que una acción y un cierre simultáneos choquen.
+        db.Entry(reporte).Property(r => r.RowVersion).IsModified = true;
+        await db.SaveChangesAsync(ct);
+        return accion;
+    }
+
+    private async Task<Reporte> ObtenerAsync(int reporteId, CancellationToken ct) =>
+        await db.Reportes.SingleOrDefaultAsync(r => r.Id == reporteId, ct) ?? throw new NoEncontrado("El reporte no existe.");
 }
