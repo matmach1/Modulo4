@@ -182,7 +182,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T072 [P] [US3] Crear la página del panel (dos contadores que muestran 0 cuando no hay reportes, enlaces al listado; FR-033) en `frontend/src/pages/Panel.jsx`
 - [X] T073 [P] [US3] Crear la página del listado global (paginación con total, estado y criticidad por fila, estado vacío) en `frontend/src/pages/ListadoAdmin.jsx`
 - [X] T074 [US3] Agregar al detalle, solo para admin, la acción sugerida destacada, ambas categorías cuando difieren y el borrador con botón "Copiar" en `frontend/src/components/DetalleAdmin.jsx` y `frontend/src/pages/DetalleReporte.jsx`
-- [ ] T075 [P] [US3] Tests de frontend del panel, el listado y el borrador en `frontend/src/__tests__/US3.test.jsx`
+- [X] T075 [P] [US3] Tests de frontend del panel, el listado y el borrador en `frontend/src/__tests__/US3.test.jsx`
 
 **Checkpoint**: US1–US3 funcionan; el administrador ve y prioriza los reportes.
 
