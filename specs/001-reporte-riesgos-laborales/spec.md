@@ -8,6 +8,16 @@
 
 **Input**: User description: "PRD.md" (PRD-001: Sistema Inteligente de Reporte y Prevención de Riesgos Laborales)
 
+## Clarifications
+
+### Session 2026-10-21
+
+- Q: Si un empleado sube varias imágenes juntas y con eso pasaría el límite de 5 por reporte, ¿qué debe hacer el sistema? → A: Se permite subir solo una imagen por operación; el caso de lote no puede ocurrir.
+- Q: ¿Qué ve el empleado en el detalle de su propio reporte, además de la descripción, la ubicación, el estado y las fechas? → A: Ve la clasificación (tipo, categoría, criticidad), las acciones correctivas, los datos de cierre y las imágenes; no ve la acción preventiva sugerida ni el borrador de mail.
+- Q: ¿Qué tamaño de página por defecto y qué tamaño máximo debe aceptar el listado global de reportes del administrador? → A: Por defecto 20, máximo 100; un tamaño ≤0 o >100 se rechaza como dato inválido.
+- Q: ¿El administrador también puede crear reportes de riesgo, o crear reportes es solo para empleados? → A: Sí; el administrador puede crear reportes, que aparecen en el listado global, y mientras estén Abiertos los edita con las mismas reglas que cualquier creador.
+- Q: ¿El usuario debe poder cerrar sesión explícitamente, con el efecto de que su sesión deje de servir de inmediato en el servidor? → A: Sí; "Cerrar sesión" invalida la sesión en el servidor y usarla después devuelve no autenticado.
+
 ## User Scenarios & Testing *(mandatory)*
 
 ### User Story 1 - Empleado reporta un riesgo y sigue su estado (Priority: P1)
@@ -39,7 +49,9 @@ en estado Abierto con fecha, hora y usuario de creación.
 6. **Given** reportes creados por los empleados A y B, **When** A lista sus reportes, **Then**
    recibe únicamente los suyos (AC-29).
 7. **Given** un reporte del empleado A, **When** A consulta su detalle, **Then** ve sus datos,
-   incluyendo fecha, hora y usuario de creación (AC-17, AC-50).
+   incluyendo fecha, hora y usuario de creación (AC-17, AC-50), además de tipo, categoría y
+   criticidad, las acciones correctivas, los datos de cierre y las imágenes, pero no la acción
+   preventiva sugerida ni el borrador de mail.
 8. **Given** un reporte del empleado A, **When** el empleado B intenta verlo, **Then** el sistema
    deniega el acceso (AC-04).
 9. **Given** un usuario no autenticado, **When** intenta ver reportes, **Then** el sistema
@@ -103,7 +115,7 @@ listado, contadores del panel y detalle con acción sugerida y borrador de mail.
 3. **Given** N reportes Críticos en estado Abierto y M reportes Abiertos pendientes de
    clasificación, **When** el administrador ve el panel, **Then** se muestran N y M (AC-26,
    AC-60).
-4. **Given** un reporte con criticidad Crítica, **When** se visualiza, **Then** se muestra
+4. **Given** un reporte con criticidad Crítica, **When** el administrador lo visualiza, **Then** se muestra
    "Detener actividad"; con Alta, "Requiere intervención inmediata"; con Baja, Media o
    "Pendiente de clasificación", ninguna recomendación (AC-08, AC-09, AC-30).
 5. **Given** un reporte recién creado, **When** el administrador consulta su detalle, **Then** ve
@@ -194,8 +206,8 @@ límites de imágenes y bloqueo una vez que el reporte pasa a En Progreso.
 
 ### User Story 6 - Gestión de la cuenta y la sesión (Priority: P3)
 
-Un usuario autenticado puede cambiar su contraseña verificando la actual. La sesión expira tras
-24 h de inactividad.
+Un usuario autenticado puede cambiar su contraseña verificando la actual y cerrar sesión. La
+sesión expira tras 24 h de inactividad.
 
 **Why this priority**: necesario para seguridad básica, pero no bloquea el flujo de reportes.
 
@@ -212,6 +224,8 @@ de inactividad y verificar que se pide autenticación de nuevo.
    reportes, **Then** el sistema exige autenticarse nuevamente (AC-48).
 4. **Given** un usuario registrado, **When** se inspecciona su registro almacenado, **Then** la
    contraseña no está en texto plano sino como hash seguro (AC-47).
+5. **Given** un usuario autenticado, **When** cierra sesión y luego intenta acceder a reportes con
+   esa misma sesión, **Then** el sistema lo trata como no autenticado y deniega el acceso.
 
 ---
 
@@ -222,9 +236,11 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - El servicio de clasificación falla al reclasificar tras una edición: la edición se guarda igual
   y la clasificación pasa a "Pendiente de clasificación" (no conserva la anterior).
 - Registros simultáneos con el mismo email: exactamente uno tiene éxito.
-- Un empleado intenta adjuntar varias imágenes en una sola operación que superaría el límite de
-  5: se rechaza el excedente y el reporte nunca supera 5 imágenes.
+- Un empleado intenta adjuntar más de una imagen en una sola operación: se rechaza la operación
+  completa y no se asocia ningún archivo (cada operación admite exactamente una imagen).
 - Página solicitada fuera de rango en el listado: se devuelve una página vacía.
+- Tamaño de página ≤0 o mayor a 100 en el listado: se rechaza como dato inválido; si no se indica
+  tamaño, se usan 20.
 - Reportes "Pendiente de clasificación" no se reintentan automáticamente; quedan visibles en el
   contador del panel.
 - Un reporte reclasificado que pasa a Crítica o Alta muestra la nueva acción sugerida en la
@@ -244,7 +260,10 @@ de inactividad y verificar que se pide autenticación de nuevo.
   funcionalidad de reportes (RF-12).
 - **FR-004**: El sistema MUST permitir cambiar la contraseña previa verificación de la actual,
   exigiendo al menos 8 caracteres en la nueva (RF-15, RF-40).
-- **FR-005**: El sistema MUST expirar la sesión tras 24 h de inactividad (RNF-06).
+- **FR-005**: El sistema MUST expirar la sesión tras 24 h de inactividad (RNF-06); cada uso
+  renueva el plazo.
+- **FR-005a**: El usuario MUST poder cerrar sesión explícitamente; la sesión MUST quedar
+  invalidada en el servidor de inmediato.
 - **FR-006**: El sistema MUST crear un administrador inicial con credenciales provistas por la
   configuración del entorno (RF-30).
 - **FR-007**: El sistema MUST almacenar las contraseñas con un hash seguro, nunca en texto plano
@@ -258,12 +277,16 @@ de inactividad y verificar que se pide autenticación de nuevo.
   (RF-01, RF-41).
 - **FR-010**: El sistema MUST registrar fecha, hora y usuario de creación de cada reporte (RF-17).
 - **FR-011**: El empleado MUST poder listar únicamente sus propios reportes y ver el detalle solo
-  de ellos (RF-03, RF-31).
-- **FR-012**: El creador MUST poder editar descripción y ubicación solo mientras el reporte esté
-  Abierto (RF-10, RF-11).
+  de ellos (RF-03, RF-31). El detalle para el empleado MUST incluir tipo, categoría, criticidad,
+  acciones correctivas, datos de cierre e imágenes, y MUST NOT incluir la acción preventiva
+  sugerida ni el borrador de mail.
+- **FR-009a**: El administrador MUST poder crear reportes con las mismas reglas que un empleado;
+  sus reportes aparecen en el listado global como cualquier otro.
+- **FR-012**: El creador (empleado o administrador) MUST poder editar descripción y ubicación
+  solo mientras el reporte esté Abierto (RF-10, RF-11).
 - **FR-013**: El sistema MUST permitir adjuntar hasta 5 imágenes JPG, JPEG o PNG de hasta 2 MB
-  cada una, solo mientras el reporte esté Abierto, y almacenarlas asociadas al reporte (RF-19,
-  RF-20, RF-33).
+  cada una, de a una imagen por operación, solo mientras el reporte esté Abierto, y almacenarlas
+  asociadas al reporte (RF-19, RF-20, RF-33).
 
 **Clasificación**
 
@@ -280,8 +303,8 @@ de inactividad y verificar que se pide autenticación de nuevo.
   "Pendiente de clasificación" (RF-35, RF-37).
 - **FR-019**: El sistema MUST validar los datos de entrada antes de solicitar la clasificación; un
   reporte inválido MUST NOT generar una consulta de clasificación (AC-67, AC-69).
-- **FR-020**: El sistema MUST sugerir "Detener actividad" para criticidad Crítica y "Requiere
-  intervención inmediata" para Alta, y ninguna acción en los demás casos (RF-09).
+- **FR-020**: El sistema MUST sugerir al administrador "Detener actividad" para criticidad Crítica
+  y "Requiere intervención inmediata" para Alta, y ninguna acción en los demás casos (RF-09).
 
 **Notificación**
 
@@ -296,7 +319,8 @@ de inactividad y verificar que se pide autenticación de nuevo.
 **Administración**
 
 - **FR-024**: El administrador MUST poder listar todos los reportes, paginados según página y
-  tamaño pedidos, con su estado y ordenados por fecha de creación descendente (RF-02a–RF-02d).
+  tamaño pedidos (tamaño por defecto 20, máximo 100; un tamaño ≤0 o >100 MUST rechazarse como
+  inválido), con su estado y ordenados por fecha de creación descendente (RF-02a–RF-02d).
 - **FR-025**: El administrador MUST poder ver el detalle de cualquier reporte, incluidas ambas
   categorías cuando difieran (RF-28, RF-31).
 - **FR-026**: El panel del administrador MUST mostrar la cantidad de reportes Abiertos con
@@ -321,6 +345,8 @@ de inactividad y verificar que se pide autenticación de nuevo.
 
 - **Usuario**: persona que usa el sistema. Email (único), contraseña hasheada, rol (empleado o
   administrador).
+- **Sesión**: sesión autenticada de un usuario, registrada en el servidor, con última actividad;
+  deja de ser válida al cerrar sesión o tras 24 h sin actividad.
 - **Reporte**: riesgo u observación reportada. Descripción, ubicación, categoría sugerida
   (opcional), tipo, categoría y criticidad automáticos (o "Pendiente de clasificación"), estado
   (Abierto, En Progreso, Cerrado), creador y fecha/hora de creación, y al cerrar: acción
