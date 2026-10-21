@@ -17,6 +17,11 @@
 - Q: ¿Qué tamaño de página por defecto y qué tamaño máximo debe aceptar el listado global de reportes del administrador? → A: Por defecto 20, máximo 100; un tamaño ≤0 o >100 se rechaza como dato inválido.
 - Q: ¿El administrador también puede crear reportes de riesgo, o crear reportes es solo para empleados? → A: Sí; el administrador puede crear reportes, que aparecen en el listado global, y mientras estén Abiertos los edita con las mismas reglas que cualquier creador.
 - Q: ¿El usuario debe poder cerrar sesión explícitamente, con el efecto de que su sesión deje de servir de inmediato en el servidor? → A: Sí; "Cerrar sesión" invalida la sesión en el servidor y usarla después devuelve no autenticado.
+- Q: Cuando un empleado crea o edita un reporte, ¿la respuesta debe esperar a que termine la clasificación (hasta 10 s) o el reporte se guarda al instante y se clasifica después? → A: No espera: el reporte se guarda al instante como "Pendiente de clasificación" y la clasificación se completa en segundo plano.
+- Q: En el panel del administrador, ¿los contadores de "Críticos abiertos" y "pendientes de clasificación abiertos" deben contar solo los reportes en estado Abierto, o también los que están En Progreso? → A: Solo los reportes en estado Abierto; los En Progreso no cuentan.
+- Q: El listado global del administrador, ¿debe seguir ordenado solo por fecha (como pide el PRD) o tiene que priorizar por criticidad, como sugiere el título de US3? → A: Orden por fecha por defecto, con opción de ordenar por criticidad; requiere actualizar el PRD.
+- Q: ¿Quién puede ver o descargar las imágenes adjuntas de un reporte? → A: Las mismas reglas que el reporte: el creador y el administrador; otro empleado recibe acceso denegado y alguien sin sesión, no autenticado.
+- Q: Para cerrar un reporte, ¿alcanza con escribir la "acción realizada" y la observación de cierre, o además tiene que haber al menos una acción correctiva registrada? → A: Alcanza con la acción realizada y la observación; las acciones correctivas son opcionales y sirven para registrar pasos intermedios.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -61,10 +66,11 @@ en estado Abierto con fecha, hora y usuario de creación.
 
 ### User Story 2 - Clasificación automática de cada reporte (Priority: P1)
 
-Al crearse un reporte, el sistema lo clasifica automáticamente por tipo, categoría y criticidad
-usando IA y una base de conocimiento de seguridad. Si el empleado sugirió una categoría distinta,
-se conservan ambas pero manda la automática. Si la IA falla o tarda, el reporte se guarda igual
-como "Pendiente de clasificación".
+Al crearse un reporte, el sistema lo guarda al instante como "Pendiente de clasificación" y lo
+clasifica en segundo plano por tipo, categoría y criticidad usando IA y una base de conocimiento de
+seguridad. Si el empleado sugirió una categoría distinta, se conservan ambas pero manda la
+automática. Si la IA falla o tarda más de 10 s, el reporte queda como "Pendiente de
+clasificación".
 
 **Why this priority**: la priorización por criticidad es lo que permite atender primero los
 riesgos más graves; es el diferencial del sistema frente a un buzón de reportes.
@@ -75,18 +81,22 @@ clasificación".
 
 **Acceptance Scenarios**:
 
-1. **Given** un reporte recién creado, **When** se consulta su detalle, **Then** su tipo es uno de
+1. **Given** un reporte cuya clasificación terminó con éxito, **When** se consulta su detalle,
+   **Then** su tipo es uno de
    Acto inseguro, Condición insegura, Casi accidente, Riesgo operativo u Otro (AC-40), su
    categoría es una de Problema de infraestructura, Riesgo eléctrico, Uso de elementos de
    protección personal u Otro, y su criticidad es una de Baja, Media, Alta o Crítica.
 2. **Given** una categoría sugerida que difiere de la automática, **When** se crea el reporte,
    **Then** la categoría definitiva es la automática y ambas quedan almacenadas (AC-06).
 3. **Given** que el servicio de clasificación devuelve error o no responde en 10 s, **When** un
-   empleado crea un reporte válido, **Then** el reporte se crea igual con tipo, categoría y
-   criticidad "Pendiente de clasificación" (AC-56, AC-58).
-4. **Given** un reporte con imágenes adjuntas, **When** se clasifica, **Then** la solicitud al
+   empleado crea un reporte válido, **Then** el reporte se crea igual y queda con tipo, categoría
+   y criticidad "Pendiente de clasificación" (AC-56, AC-58).
+4. **Given** un servicio de clasificación que todavía no respondió, **When** un empleado crea un
+   reporte válido, **Then** la creación responde de inmediato con el reporte en "Pendiente de
+   clasificación", sin esperar el resultado de la clasificación.
+5. **Given** un reporte con imágenes adjuntas, **When** se clasifica, **Then** la solicitud al
    servicio de clasificación no contiene imágenes (AC-23).
-5. **Given** el dataset de validación versionado, **When** se clasifica el conjunto completo,
+6. **Given** el dataset de validación versionado, **When** se clasifica el conjunto completo,
    **Then** los aciertos son ≥ 90% en categoría, ≥ 90% en tipo y ≥ 85% en criticidad (AC-05).
 
 ---
@@ -94,8 +104,8 @@ clasificación".
 ### User Story 3 - Administrador ve los reportes priorizados (Priority: P2)
 
 El administrador de Seguridad e Higiene ve todos los reportes en un listado paginado, ordenado del
-más reciente al más antiguo y con su estado. En su panel principal ve cuántos reportes Críticos
-siguen abiertos y cuántos abiertos están pendientes de clasificación. En el detalle de cada
+más reciente al más antiguo o, si lo elige, por criticidad, con su estado y su criticidad. En su panel principal ve cuántos reportes Críticos
+están en estado Abierto y cuántos en estado Abierto están pendientes de clasificación. En el detalle de cada
 reporte ve la acción preventiva sugerida, las categorías sugerida y automática si difieren, y un
 borrador de mail listo para copiar.
 
@@ -109,12 +119,15 @@ listado, contadores del panel y detalle con acción sugerida y borrador de mail.
 
 1. **Given** reportes existentes y parámetros de página y tamaño, **When** el administrador los
    lista, **Then** recibe como máximo ese tamaño de reportes de la página pedida, cada uno con su
-   estado, ordenados del más reciente al más antiguo (AC-02, AC-49).
+   estado y criticidad, ordenados del más reciente al más antiguo (AC-02, AC-49).
+10. **Given** reportes con distintas criticidades, **When** el administrador pide el listado
+    ordenado por criticidad, **Then** recibe primero los Críticos, luego Alta, Media, Baja y al
+    final "Pendiente de clasificación", y dentro de cada nivel del más reciente al más antiguo.
 2. **Given** un empleado autenticado, **When** intenta acceder al listado global o al panel,
    **Then** el sistema deniega el acceso (AC-03, AC-38).
 3. **Given** N reportes Críticos en estado Abierto y M reportes Abiertos pendientes de
    clasificación, **When** el administrador ve el panel, **Then** se muestran N y M (AC-26,
-   AC-60).
+   AC-60); los reportes Críticos o pendientes que están En Progreso o Cerrados no se cuentan.
 4. **Given** un reporte con criticidad Crítica, **When** el administrador lo visualiza, **Then** se muestra
    "Detener actividad"; con Alta, "Requiere intervención inmediata"; con Baja, Media o
    "Pendiente de clasificación", ninguna recomendación (AC-08, AC-09, AC-30).
@@ -158,8 +171,8 @@ cerrarlo; verificar estados, acción con fecha y responsable, y datos de cierre.
    sistema lo rechaza y no registra la acción (AC-55).
 6. **Given** un reporte En Progreso, **When** el administrador intenta cerrarlo sin acción
    realizada o sin observación, **Then** el sistema lo rechaza y sigue En Progreso (AC-25).
-7. **Given** un reporte En Progreso, **When** el administrador lo cierra con ambos textos,
-   **Then** queda Cerrado, ambos textos se muestran en el detalle junto con fecha, hora y usuario
+7. **Given** un reporte En Progreso, con o sin acciones correctivas registradas, **When** el
+   administrador lo cierra con ambos textos, **Then** queda Cerrado, ambos textos se muestran en el detalle junto con fecha, hora y usuario
    de cierre (AC-35, AC-18).
 8. **Given** un empleado, **When** intenta cambiar el estado o registrar una acción, **Then** el
    sistema deniega el acceso (AC-16, AC-37).
@@ -201,6 +214,10 @@ límites de imágenes y bloqueo una vez que el reporte pasa a En Progreso.
    (AC-19, AC-20, AC-21).
 8. **Given** un reporte con imágenes, **When** se consulta su detalle, **Then** las imágenes se
    muestran asociadas a ese reporte (AC-22).
+9. **Given** una imagen adjunta a un reporte del empleado A, **When** el empleado B intenta verla
+   o descargarla, **Then** el sistema deniega el acceso; **When** lo intenta alguien sin sesión,
+   **Then** el sistema lo trata como no autenticado; **When** lo intentan A o el administrador,
+   **Then** la obtienen.
 
 ---
 
@@ -241,8 +258,15 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - Página solicitada fuera de rango en el listado: se devuelve una página vacía.
 - Tamaño de página ≤0 o mayor a 100 en el listado: se rechaza como dato inválido; si no se indica
   tamaño, se usan 20.
+- Criterio de orden desconocido en el listado (distinto de fecha o criticidad): se rechaza como
+  dato inválido.
 - Reportes "Pendiente de clasificación" no se reintentan automáticamente; quedan visibles en el
-  contador del panel.
+  contador del panel. Mientras una clasificación en segundo plano está en curso, el reporte
+  también figura como "Pendiente de clasificación" y cuenta en ese contador.
+- Si el creador edita el reporte mientras sigue en curso la clasificación de la versión anterior,
+  el resultado de esa clasificación anterior se descarta; solo se guarda el de la última versión.
+- Si la aplicación se reinicia con clasificaciones en curso, esos reportes quedan como "Pendiente
+  de clasificación" (no se reintentan).
 - Un reporte reclasificado que pasa a Crítica o Alta muestra la nueva acción sugerida en la
   siguiente consulta.
 
@@ -287,20 +311,27 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - **FR-013**: El sistema MUST permitir adjuntar hasta 5 imágenes JPG, JPEG o PNG de hasta 2 MB
   cada una, de a una imagen por operación, solo mientras el reporte esté Abierto, y almacenarlas
   asociadas al reporte (RF-19, RF-20, RF-33).
+- **FR-013a**: Ver o descargar una imagen adjunta MUST estar permitido solo a quien puede ver el
+  reporte (su creador y el administrador); el resto MUST recibir acceso denegado, o no
+  autenticado si no tiene sesión.
 
 **Clasificación**
 
-- **FR-014**: El sistema MUST clasificar cada reporte al crearlo en tipo, categoría y criticidad
-  usando IA con la base de conocimiento de seguridad como contexto, en una única consulta (RF-04,
-  RF-07, RF-25, RNF-01).
+- **FR-014**: El sistema MUST clasificar cada reporte en tipo, categoría y criticidad usando IA
+  con la base de conocimiento de seguridad como contexto, en una única consulta (RF-04, RF-07,
+  RF-25, RNF-01). La clasificación MUST ejecutarse en segundo plano: la creación MUST responder
+  sin esperarla, con el reporte en "Pendiente de clasificación" hasta que llegue el resultado.
 - **FR-015**: La clasificación MUST basarse solo en la información de texto; las imágenes MUST
   NOT enviarse al servicio de clasificación (RF-21).
 - **FR-016**: Cuando la categoría sugerida difiera de la automática, el sistema MUST conservar la
   automática como definitiva y almacenar ambas (RF-05, RF-06).
-- **FR-017**: El sistema MUST reclasificar el reporte cada vez que su creador lo edita (RF-32).
+- **FR-017**: El sistema MUST reclasificar el reporte en segundo plano cada vez que su creador lo
+  edita (RF-32); la edición MUST responder sin esperar la reclasificación, con el reporte en
+  "Pendiente de clasificación", y el resultado de una clasificación de una versión anterior MUST
+  descartarse.
 - **FR-018**: Si la clasificación falla, no responde en 10 s o devuelve valores inválidos, el
-  sistema MUST guardar igualmente el reporte (o la edición) con tipo, categoría y criticidad
-  "Pendiente de clasificación" (RF-35, RF-37).
+  reporte (o la edición) MUST quedar guardado con tipo, categoría y criticidad "Pendiente de
+  clasificación" (RF-35, RF-37).
 - **FR-019**: El sistema MUST validar los datos de entrada antes de solicitar la clasificación; un
   reporte inválido MUST NOT generar una consulta de clasificación (AC-67, AC-69).
 - **FR-020**: El sistema MUST sugerir al administrador "Detener actividad" para criticidad Crítica
@@ -320,18 +351,23 @@ de inactividad y verificar que se pide autenticación de nuevo.
 
 - **FR-024**: El administrador MUST poder listar todos los reportes, paginados según página y
   tamaño pedidos (tamaño por defecto 20, máximo 100; un tamaño ≤0 o >100 MUST rechazarse como
-  inválido), con su estado y ordenados por fecha de creación descendente (RF-02a–RF-02d).
+  inválido), con su estado y criticidad. El orden por defecto MUST ser por fecha de creación
+  descendente (RF-02a–RF-02d); el administrador MUST poder pedir, en cambio, orden por criticidad
+  (Crítica, Alta, Media, Baja, "Pendiente de clasificación"), con fecha de creación descendente
+  dentro de cada nivel.
 - **FR-025**: El administrador MUST poder ver el detalle de cualquier reporte, incluidas ambas
   categorías cuando difieran (RF-28, RF-31).
-- **FR-026**: El panel del administrador MUST mostrar la cantidad de reportes Abiertos con
-  criticidad Crítica y la de reportes Abiertos "Pendiente de clasificación" (RF-24, RF-38).
+- **FR-026**: El panel del administrador MUST mostrar la cantidad de reportes en estado Abierto
+  con criticidad Crítica y la de reportes en estado Abierto "Pendiente de clasificación" (RF-24,
+  RF-38). Los reportes En Progreso o Cerrados MUST NOT contarse.
 - **FR-027**: El administrador MUST poder cambiar el estado solo según Abierto → En Progreso →
   Cerrado; cualquier otra transición MUST rechazarse (RF-16).
 - **FR-028**: El administrador MUST poder registrar acciones correctivas o preventivas con
   descripción, asignando automáticamente fecha y responsable, excepto en reportes Cerrados (RF-22,
   RF-34).
 - **FR-029**: Al cerrar, el sistema MUST exigir acción realizada y observación de cierre, y
-  registrar fecha, hora y usuario de cierre (RF-18, RF-23).
+  registrar fecha, hora y usuario de cierre (RF-18, RF-23). El cierre MUST NOT exigir acciones
+  correctivas registradas; estas son opcionales y registran pasos intermedios.
 - **FR-030**: Las operaciones de administración (listado global, panel, cambio de estado, acciones,
   borrador de mail) MUST estar denegadas al rol empleado.
 
@@ -366,8 +402,9 @@ de inactividad y verificar que se pide autenticación de nuevo.
   automática falla o no responde.
 - **SC-002**: La clasificación automática acierta al menos el 90% de las categorías, el 90% de los
   tipos y el 85% de las criticidades sobre el dataset de validación de Seguridad e Higiene.
-- **SC-003**: En el 95% de los casos, la clasificación de un reporte se obtiene en menos de
-  3 segundos (AC-45).
+- **SC-003**: En el 95% de los casos, la clasificación de un reporte queda guardada en menos de
+  3 segundos desde su creación o edición (AC-45); la respuesta de creación o edición no depende de
+  ese tiempo.
 - **SC-004**: Ningún empleado puede ver, editar ni gestionar reportes de otro usuario, ni acceder a
   funciones de administrador: el 100% de los escenarios de control de acceso del PRD se cumple.
 - **SC-005**: Todo reporte Cerrado tiene registrado quién lo creó, qué acción se realizó, quién lo
@@ -375,7 +412,7 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - **SC-006**: Un empleado puede crear un reporte completando solo dos campos obligatorios
   (descripción y ubicación).
 - **SC-007**: El administrador conoce, desde el panel principal y sin buscar, cuántos reportes
-  Críticos siguen abiertos y cuántos están pendientes de clasificación.
+  Críticos están en estado Abierto y cuántos en estado Abierto están pendientes de clasificación.
 
 ## Assumptions
 
@@ -391,3 +428,5 @@ de inactividad y verificar que se pide autenticación de nuevo.
   eliminación de reportes, recuperación de contraseña, reintento de clasificación, exportes y
   estadísticas más allá de los contadores del panel, notificaciones al empleado.
 - Se informa a los usuarios que el contenido de los reportes se envía a un servicio externo de IA.
+- El orden por criticidad del listado global (FR-024) no está en el PRD vigente; según la
+  constitución, el PRD debe actualizarse antes de implementarlo.
