@@ -20,6 +20,7 @@ builder.Services.AddSingleton(sp => new HashContrasena(
     sp.GetRequiredService<IConfiguration>().GetValue("Seguridad:FactorBcrypt", 12)));
 builder.Services.AddScoped<ServicioSesiones>();
 builder.Services.AddScoped<ServicioCuentas>();
+builder.Services.AddScoped<ServicioReportes>();
 
 builder.Services.AddSingleton<ColaClasificacion>();
 builder.Services.AddSingleton<IColaClasificacion>(sp => sp.GetRequiredService<ColaClasificacion>());
@@ -48,6 +49,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapAuthEndpoints();
+app.MapReportesEndpoints();
 
 app.Run();
 
