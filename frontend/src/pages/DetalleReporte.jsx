@@ -2,6 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { api, mensajeDeError } from '../api/cliente';
 import { EtiquetaCriticidad } from '../components/TablaReportes';
+import usePollingClasificacion, { estaPendiente } from '../hooks/usePollingClasificacion';
 import { CATEGORIAS, ESTADOS, TIPOS, fechaHora, texto } from '../textos';
 
 export default function DetalleReporte() {
@@ -23,6 +24,8 @@ export default function DetalleReporte() {
   useEffect(() => {
     cargar();
   }, [cargar]);
+
+  usePollingClasificacion(reporte, cargar);
 
   if (error) return <main><p role="alert" className="error">{error}</p></main>;
   if (!reporte) return <main><p>Cargando…</p></main>;
@@ -52,7 +55,16 @@ export default function DetalleReporte() {
           <dd>{texto(CATEGORIAS, reporte.categoria)}</dd>
           <dt>Criticidad</dt>
           <dd><EtiquetaCriticidad valor={reporte.criticidad} /></dd>
+          {reporte.categoriaSugerida && (
+            <>
+              <dt>Categoría sugerida</dt>
+              <dd>{texto(CATEGORIAS, reporte.categoriaSugerida)}</dd>
+            </>
+          )}
         </dl>
+        {estaPendiente(reporte) && (
+          <p className="vacio">La clasificación se completa en unos segundos. Si no aparece, queda pendiente.</p>
+        )}
       </section>
     </main>
   );
