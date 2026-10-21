@@ -2,6 +2,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './auth/AuthContext';
 import RutaProtegida from './auth/RutaProtegida';
 import DetalleReporte from './pages/DetalleReporte';
+import ListadoAdmin from './pages/ListadoAdmin';
 import Login from './pages/Login';
 import MisReportes from './pages/MisReportes';
 import NuevoReporte from './pages/NuevoReporte';
@@ -47,6 +48,7 @@ export default function App() {
         <Route path="/mis-reportes" element={<RutaProtegida><MisReportes /></RutaProtegida>} />
         <Route path="/reportes/nuevo" element={<RutaProtegida><NuevoReporte /></RutaProtegida>} />
         <Route path="/admin/panel" element={<RutaProtegida rol="Administrador"><Panel /></RutaProtegida>} />
+        <Route path="/admin/reportes" element={<RutaProtegida rol="Administrador"><ListadoAdmin /></RutaProtegida>} />
         <Route path="/reportes/:id" element={<RutaProtegida><DetalleReporte /></RutaProtegida>} />
         <Route path="*" element={<RutaProtegida><p>Página no encontrada.</p></RutaProtegida>} />
       </Routes>
