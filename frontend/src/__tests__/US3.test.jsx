@@ -14,6 +14,7 @@ const DETALLE = {
   categoriaSugerida: 'RiesgoElectrico',
   fechaCreacion: '2026-10-21T12:00:00Z',
   creadorEmail: EMPLEADO.email,
+  acciones: [],
   inicioProgreso: null,
   cierre: null,
   accionSugerida: 'Detener actividad',

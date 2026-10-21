@@ -1,13 +1,16 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { api, mensajeDeError } from '../api/cliente';
+import { useAuth } from '../auth/AuthContext';
 import DetalleAdmin from '../components/DetalleAdmin';
+import GestionReporte from '../components/GestionReporte';
 import { EtiquetaCriticidad } from '../components/TablaReportes';
 import usePollingClasificacion, { estaPendiente } from '../hooks/usePollingClasificacion';
 import { CATEGORIAS, ESTADOS, TIPOS, fechaHora, texto } from '../textos';
 
 export default function DetalleReporte() {
   const { id } = useParams();
+  const { usuario } = useAuth();
   const [reporte, setReporte] = useState(null);
   const [error, setError] = useState('');
 
@@ -71,6 +74,8 @@ export default function DetalleReporte() {
           <p className="vacio">La clasificación se completa en unos segundos. Si no aparece, queda pendiente.</p>
         )}
       </section>
+
+      <GestionReporte reporte={reporte} esAdmin={usuario?.rol === 'Administrador'} onCambio={cargar} />
     </main>
   );
 }

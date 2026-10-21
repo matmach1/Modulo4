@@ -14,6 +14,7 @@ const REPORTE = {
   categoriaSugerida: null,
   fechaCreacion: '2026-10-21T12:00:00Z',
   creadorEmail: EMPLEADO.email,
+  acciones: [],
 };
 
 describe('Registro', () => {
