@@ -77,6 +77,38 @@ namespace Riesgos.Core.Persistencia.Migrations
                     b.ToTable("EventosNotificacion");
                 });
 
+            modelBuilder.Entity("Riesgos.Core.Dominio.ImagenAdjunta", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<long>("FechaCarga")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("NombreArchivo")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ReporteId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("TamanoBytes")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("TipoContenido")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReporteId");
+
+                    b.ToTable("ImagenesAdjuntas", (string)null);
+                });
+
             modelBuilder.Entity("Riesgos.Core.Dominio.Reporte", b =>
                 {
                     b.Property<int>("Id")
@@ -251,6 +283,17 @@ namespace Riesgos.Core.Persistencia.Migrations
                     b.Navigation("Reporte");
                 });
 
+            modelBuilder.Entity("Riesgos.Core.Dominio.ImagenAdjunta", b =>
+                {
+                    b.HasOne("Riesgos.Core.Dominio.Reporte", "Reporte")
+                        .WithMany("Imagenes")
+                        .HasForeignKey("ReporteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Reporte");
+                });
+
             modelBuilder.Entity("Riesgos.Core.Dominio.Reporte", b =>
                 {
                     b.HasOne("Riesgos.Core.Dominio.Usuario", "Creador")
@@ -290,6 +333,8 @@ namespace Riesgos.Core.Persistencia.Migrations
             modelBuilder.Entity("Riesgos.Core.Dominio.Reporte", b =>
                 {
                     b.Navigation("Acciones");
+
+                    b.Navigation("Imagenes");
                 });
 #pragma warning restore 612, 618
         }

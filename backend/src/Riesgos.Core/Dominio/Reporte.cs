@@ -53,6 +53,8 @@ public class Reporte
 
     public List<AccionCorrectiva> Acciones { get; set; } = [];
 
+    public List<ImagenAdjunta> Imagenes { get; set; } = [];
+
     // Token de concurrencia optimista (research R7).
     public int RowVersion { get; set; }
 
