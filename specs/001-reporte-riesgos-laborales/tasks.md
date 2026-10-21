@@ -168,7 +168,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T061 [P] [US3] Tests del listado global en `backend/tests/Riesgos.Api.Tests/US3/ListadoAdminTests.cs`: AC-02 (como máximo `size` de la página pedida, cada uno con estado), AC-49 (fecha desc.), página fuera de rango ⇒ lista vacía, `size` por defecto 20, `size` ≤ 0 o > 100 ⇒ 400, orden estable con fechas iguales, AC-03 y AC-42 (empleado, incluso recién registrado ⇒ 403), AC-44 (con base vacía y variables de admin, el admin inicia sesión y lista)
 - [X] T062 [P] [US3] Tests del panel en `backend/tests/Riesgos.Api.Tests/US3/PanelTests.cs`: AC-26 (N Críticos en estado Abierto), AC-60 (M Abiertos pendientes), Críticos o pendientes en En Progreso o Cerrado no cuentan (FR-026), AC-38 (empleado ⇒ 403)
 - [X] T063 [P] [US3] Tests del detalle para el admin en `backend/tests/Riesgos.Api.Tests/US3/DetalleAdminTests.cs`: AC-51 (cualquier reporte ⇒ 200), AC-08/AC-09/AC-30 (acción sugerida según criticidad), AC-41 (borrador tras procesar la cola), AC-43 (ambas categorías cuando difieren), AC-39 (el empleado creador no recibe `borradorMail`)
-- [ ] T064 [P] [US3] Test del evento de notificación en `backend/tests/Riesgos.Api.Tests/US3/EventoNotificacionTests.cs`: AC-07 (al terminar la creación existe un evento asociado al reporte, uno solo)
+- [X] T064 [P] [US3] Test del evento de notificación en `backend/tests/Riesgos.Api.Tests/US3/EventoNotificacionTests.cs`: AC-07 (al terminar la creación existe un evento asociado al reporte, uno solo)
 
 ### Implementation for User Story 3
 
