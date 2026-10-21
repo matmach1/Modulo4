@@ -53,7 +53,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 - [X] T007 [P] Test de arquitectura en `backend/tests/Riesgos.Core.Tests/ArquitecturaTests.cs`: el ensamblado `Riesgos.Core` y `Riesgos.Api` no referencian el ensamblado `Anthropic` directamente (Principio I) [Trait("FR","FR-014")]
 - [X] T008 [P] Tests del validador de textos en `backend/tests/Riesgos.Core.Tests/Validacion/TextoTests.cs`: recorta espacios, un texto solo con espacios es vacío, respeta largos máximos (R8)
-- [ ] T009 [P] Tests del handler de sesión en `backend/tests/Riesgos.Api.Tests/Auth/SesionTests.cs`: request sin cookie a un endpoint protegido ⇒ 401 (AC-12); login con credenciales válidas ⇒ 200 + cookie `HttpOnly`/`SameSite=Strict`; login con email inexistente y con contraseña incorrecta ⇒ 401 con el mismo mensaje (R4); `UltimaActividad` se renueva; fuera de Development, un request HTTP ⇒ redirección a HTTPS y las respuestas HTTPS incluyen `Strict-Transport-Security` (FR-032, AC-74)
+- [X] T009 [P] Tests del handler de sesión en `backend/tests/Riesgos.Api.Tests/Auth/SesionTests.cs`: request sin cookie a un endpoint protegido ⇒ 401 (AC-12); login con credenciales válidas ⇒ 200 + cookie `HttpOnly`/`SameSite=Strict`; login con email inexistente y con contraseña incorrecta ⇒ 401 con el mismo mensaje (R4); `UltimaActividad` se renueva; fuera de Development, un request HTTP ⇒ redirección a HTTPS y las respuestas HTTPS incluyen `Strict-Transport-Security` (FR-032, AC-74)
 
 ### Dominio y persistencia
 
@@ -67,11 +67,11 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Autenticación y API base
 
-- [ ] T017 Implementar `ServicioSesiones` (crear token aleatorio de 256 bits, guardar SHA-256, validar vigencia con `TimeProvider`, renovar `UltimaActividad` como máximo una vez por minuto, borrar sesión, borrar las demás sesiones de un usuario) en `backend/src/Riesgos.Core/Servicios/ServicioSesiones.cs`
-- [ ] T018 Implementar `SesionAuthenticationHandler` (lee la cookie `riesgos_sesion`, valida con `ServicioSesiones`, emite claims `sub` y `role`) y las políticas `Empleado`/`Administrador` en `backend/src/Riesgos.Api/Auth/SesionAuthenticationHandler.cs` y `backend/src/Riesgos.Api/Auth/Politicas.cs`
-- [ ] T019 Implementar `POST /api/auth/login` y `GET /api/auth/yo` en `backend/src/Riesgos.Api/Endpoints/AuthEndpoints.cs` (cookie `HttpOnly`, `Secure`, `SameSite=Strict`; mismo 401 para email o contraseña incorrectos) (hace pasar T009)
-- [ ] T020 [P] Configurar `ProblemDetails`, mapeo `ErrorValidacion` ⇒ 400, `DbUpdateConcurrencyException` ⇒ 409, logging estructurado sin datos sensibles, y `UseHttpsRedirection` + `UseHsts` fuera de Development (FR-032) en `backend/src/Riesgos.Api/Infraestructura/Errores.cs` y `backend/src/Riesgos.Api/Program.cs` (R8, R13)
-- [ ] T021 Implementar el seed del administrador inicial (`ADMIN_EMAIL`/`ADMIN_PASSWORD`; si ya existe un admin no se modifica; si no existe y faltan las variables, la app no arranca con un mensaje claro) en `backend/src/Riesgos.Api/Infraestructura/SeedAdministrador.cs` (FR-006, R12)
+- [X] T017 Implementar `ServicioSesiones` (crear token aleatorio de 256 bits, guardar SHA-256, validar vigencia con `TimeProvider`, renovar `UltimaActividad` como máximo una vez por minuto, borrar sesión, borrar las demás sesiones de un usuario) en `backend/src/Riesgos.Core/Servicios/ServicioSesiones.cs`
+- [X] T018 Implementar `SesionAuthenticationHandler` (lee la cookie `riesgos_sesion`, valida con `ServicioSesiones`, emite claims `sub` y `role`) y las políticas `Empleado`/`Administrador` en `backend/src/Riesgos.Api/Auth/SesionAuthenticationHandler.cs` y `backend/src/Riesgos.Api/Auth/Politicas.cs`
+- [X] T019 Implementar `POST /api/auth/login` y `GET /api/auth/yo` en `backend/src/Riesgos.Api/Endpoints/AuthEndpoints.cs` (cookie `HttpOnly`, `Secure`, `SameSite=Strict`; mismo 401 para email o contraseña incorrectos) (hace pasar T009)
+- [X] T020 [P] Configurar `ProblemDetails`, mapeo `ErrorValidacion` ⇒ 400, `DbUpdateConcurrencyException` ⇒ 409, logging estructurado sin datos sensibles, y `UseHttpsRedirection` + `UseHsts` fuera de Development (FR-032) en `backend/src/Riesgos.Api/Infraestructura/Errores.cs` y `backend/src/Riesgos.Api/Program.cs` (R8, R13)
+- [X] T021 Implementar el seed del administrador inicial (`ADMIN_EMAIL`/`ADMIN_PASSWORD`; si ya existe un admin no se modifica; si no existe y faltan las variables, la app no arranca con un mensaje claro) en `backend/src/Riesgos.Api/Infraestructura/SeedAdministrador.cs` (FR-006, R12)
 
 ### Módulo de clasificación (interfaces y cola)
 
@@ -80,10 +80,10 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Infraestructura de tests
 
-- [ ] T024 Crear `ApiFactory` (WebApplicationFactory con SQLite en memoria compartida, `FakeTimeProvider`, `ClasificadorSimulado` y `ColaClasificacionManual` registrados, variables de admin de prueba) en `backend/tests/Riesgos.Api.Tests/Infraestructura/ApiFactory.cs`
-- [ ] T025 [P] Crear `ClasificadorSimulado` (configurable: devolver `Exito`, `Falla`, demorar más de 10 s; registra cada `EntradaClasificacion` recibida) en `backend/tests/Riesgos.Api.Tests/Infraestructura/ClasificadorSimulado.cs`
-- [ ] T026 [P] Crear `ColaClasificacionManual` (acumula trabajos; `ProcesarPendientesAsync()` los procesa con el `ProcesadorClasificacion` cuando exista, o no hace nada antes de US2) en `backend/tests/Riesgos.Api.Tests/Infraestructura/ColaClasificacionManual.cs`
-- [ ] T027 [P] Crear helpers `ClienteAutenticadoAsync(email, rol)` y `ComoAdminAsync()` en `backend/tests/Riesgos.Api.Tests/Infraestructura/Clientes.cs`
+- [X] T024 Crear `ApiFactory` (WebApplicationFactory con SQLite en memoria compartida, `FakeTimeProvider`, `ClasificadorSimulado` y `ColaClasificacionManual` registrados, variables de admin de prueba) en `backend/tests/Riesgos.Api.Tests/Infraestructura/ApiFactory.cs`
+- [X] T025 [P] Crear `ClasificadorSimulado` (configurable: devolver `Exito`, `Falla`, demorar más de 10 s; registra cada `EntradaClasificacion` recibida) en `backend/tests/Riesgos.Api.Tests/Infraestructura/ClasificadorSimulado.cs`
+- [X] T026 [P] Crear `ColaClasificacionManual` (acumula trabajos; `ProcesarPendientesAsync()` los procesa con el `ProcesadorClasificacion` cuando exista, o no hace nada antes de US2) en `backend/tests/Riesgos.Api.Tests/Infraestructura/ColaClasificacionManual.cs`
+- [X] T027 [P] Crear helpers `ClienteAutenticadoAsync(email, rol)` y `ComoAdminAsync()` en `backend/tests/Riesgos.Api.Tests/Infraestructura/Clientes.cs`
 
 ### Frontend base
 
