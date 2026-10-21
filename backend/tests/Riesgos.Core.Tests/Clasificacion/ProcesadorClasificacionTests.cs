@@ -134,6 +134,33 @@ public sealed class ProcesadorClasificacionTests : IDisposable
     }
 
     [Fact]
+    [Trait("AC", "AC-57")]
+    [Trait("FR", "FR-022")]
+    public async Task Al_guardar_el_resultado_regenera_el_borrador()
+    {
+        var reporte = await _base.CrearReporteAsync();
+        _clasificador.Responder = _ => Task.FromResult<ResultadoClasificacion>(Valida);
+
+        await ProcesarAsync(new TrabajoClasificacion(reporte.Id, reporte.VersionClasificacion));
+
+        var evento = await _base.LeerEventoAsync(reporte.Id);
+        Assert.Contains("Riesgo eléctrico", evento.AsuntoBorrador);
+        Assert.Contains("Crítica", evento.AsuntoBorrador);
+    }
+
+    [Fact]
+    [Trait("AC", "AC-62")]
+    [Trait("FR", "FR-022")]
+    public async Task Ante_una_falla_el_borrador_indica_pendiente()
+    {
+        var reporte = await _base.CrearReporteAsync();
+
+        await ProcesarAsync(new TrabajoClasificacion(reporte.Id, reporte.VersionClasificacion));
+
+        Assert.Contains("Pendiente de clasificación", (await _base.LeerEventoAsync(reporte.Id)).AsuntoBorrador);
+    }
+
+    [Fact]
     public async Task Un_reporte_inexistente_no_produce_error()
     {
         await ProcesarAsync(new TrabajoClasificacion(9999, 1));

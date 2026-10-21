@@ -27,6 +27,8 @@ public sealed class BaseDePrueba : IDisposable
         reporte.ReiniciarClasificacion();
         db.Reportes.Add(reporte);
         await db.SaveChangesAsync();
+        db.EventosNotificacion.Add(new EventoNotificacion { ReporteId = reporte.Id, AsuntoBorrador = "inicial", CuerpoBorrador = "inicial" });
+        await db.SaveChangesAsync();
         return reporte;
     }
 
@@ -34,6 +36,12 @@ public sealed class BaseDePrueba : IDisposable
     {
         await using var db = NuevoContexto();
         return await db.Reportes.AsNoTracking().SingleAsync(r => r.Id == id);
+    }
+
+    public async Task<EventoNotificacion> LeerEventoAsync(int reporteId)
+    {
+        await using var db = NuevoContexto();
+        return await db.EventosNotificacion.AsNoTracking().SingleAsync(e => e.ReporteId == reporteId);
     }
 
     public void Dispose()

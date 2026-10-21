@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Riesgos.Core.Dominio;
+using Riesgos.Core.Notificacion;
 using Riesgos.Core.Persistencia;
 
 namespace Riesgos.Core.Clasificacion;
@@ -43,6 +44,11 @@ public sealed class ProcesadorClasificacion(
                     .SetProperty(r => r.Criticidad, criticidad),
                 ct);
 
+        if (actualizados > 0)
+        {
+            await RegenerarBorradorAsync(trabajo.ReporteId, ct);
+        }
+
         // Sin el texto del reporte en el log (research R13).
         logger.LogInformation(
             "Clasificación del reporte {ReporteId}: {Resultado} en {LatenciaMs} ms{Descartado}",
@@ -50,6 +56,21 @@ public sealed class ProcesadorClasificacion(
             resultado is ResultadoClasificacion.Falla falla ? $"falla ({falla.Motivo})" : "éxito",
             (long)latencia.TotalMilliseconds,
             actualizados == 0 ? " (descartada: el reporte cambió)" : string.Empty);
+    }
+
+    // El borrador refleja siempre la clasificación vigente, incluido "Pendiente" (FR-022).
+    private async Task RegenerarBorradorAsync(int reporteId, CancellationToken ct)
+    {
+        var reporte = await db.Reportes.AsNoTracking().Include(r => r.Creador).SingleAsync(r => r.Id == reporteId, ct);
+        var borrador = GeneradorBorrador.Generar(reporte, reporte.Creador.Email);
+        var ahora = tiempo.GetUtcNow();
+        await db.EventosNotificacion
+            .Where(e => e.ReporteId == reporteId)
+            .ExecuteUpdateAsync(
+                s => s.SetProperty(e => e.AsuntoBorrador, borrador.Asunto)
+                    .SetProperty(e => e.CuerpoBorrador, borrador.Cuerpo)
+                    .SetProperty(e => e.FechaActualizacion, ahora),
+                ct);
     }
 
     private async Task<ResultadoClasificacion> ClasificarConLimiteAsync(EntradaClasificacion entrada, CancellationToken ct)
