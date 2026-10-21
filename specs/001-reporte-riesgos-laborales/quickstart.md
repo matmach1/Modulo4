@@ -68,5 +68,5 @@ Esperado: aciertos ≥ 90% en categoría y tipo, ≥ 85% en criticidad, y p95 de
 ## 5. Chequeo de secretos (AC-46)
 
 ```bash
-test -n "$API_KEY" && git grep -nF "$API_KEY"   # con API_KEY definida: no debe haber coincidencias
+scripts/verificar-secretos.sh   # falla si encuentra secretos en archivos versionados (T117)
 ```

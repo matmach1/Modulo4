@@ -1,6 +1,6 @@
 # API Contract: Sistema de Reporte y Prevención de Riesgos Laborales
 
-**Base**: `/api` · JSON (`application/json`) salvo la subida de imágenes · Autenticación por
+**Base**: `/api` · solo HTTPS (HTTP se redirige; HSTS; FR-032) · JSON (`application/json`) salvo la subida de imágenes · Autenticación por
 cookie de sesión `riesgos_sesion` (`HttpOnly`, `Secure`, `SameSite=Strict`).
 
 Errores con `ProblemDetails` (RFC 9457). Códigos comunes:
@@ -100,6 +100,7 @@ Valores en JSON: los enums se serializan con sus nombres (`"EnProgreso"`, `"UsoE
 | `POST /admin/reportes/{id}/estado` | AC-15, AC-16, AC-25, AC-33, AC-34, AC-35 |
 | `POST /admin/reportes/{id}/acciones` | AC-24, AC-37, AC-54, AC-55 |
 
-Sin AC en el PRD (agregados en la clarificación, pendientes de actualizar el PRD): `logout`,
-creación por el administrador, `orden=criticidad`, `GET /imagenes/{imagenId}` y la visibilidad
-del detalle para el empleado.
+Agregados con la enmienda del PRD: `logout` (AC-72), `orden=criticidad` (AC-70, AC-71),
+`GET /imagenes/{imagenId}` (AC-73), HTTPS (AC-74) y la respuesta inmediata de creación (AC-75).
+La creación por el administrador la cubre RF-01; la visibilidad del detalle para el empleado
+deriva de RF-27 y RF-31.

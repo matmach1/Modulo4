@@ -32,7 +32,7 @@ Nunca se versionan con valores reales (`.env` va en `.gitignore`).
 | Variable | Uso |
 |----------|-----|
 | `API_KEY` | Clave de Claude API (RNF-04). Sin ella la app arranca, pero los reportes quedan "Pendiente de clasificación". |
-| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Administrador inicial (RF-30). Obligatorias si la base no tiene administrador; si ya existe, no lo modifican. |
+| `ADMIN_EMAIL`, `ADMIN_PASSWORD` | Administrador inicial (RF-30). Obligatorias si la base no tiene administrador; si ya existe, no lo modifican. En v1 hay un único administrador: para reemplazarlo hay que hacerlo en la base de datos (procedimiento a documentar con la implementación, T115). |
 | `CLAUDE_MODEL` | Opcional. Modelo de clasificación; por defecto `claude-opus-5-5`. |
 
 ## Qué NO hacer

@@ -12,54 +12,54 @@ aceptación sean medibles y trazables a los RF/AC del PRD. Revisión estándar p
 
 ## Autenticación y cuentas
 
-- [ ] CHK001 - ¿Está especificado qué respuesta recibe un login fallido y si debe ser la misma para email inexistente y contraseña incorrecta? [Gap, Spec §FR-003]
-- [ ] CHK002 - ¿Está definido si hay límite de intentos de login fallidos o bloqueo temporal, o se excluye explícitamente del alcance? [Gap]
-- [ ] CHK003 - ¿Está especificado si la unicidad del email distingue mayúsculas de minúsculas y si se ignoran los espacios al inicio y al final? [Clarity, Spec §FR-002, Key Entities]
-- [ ] CHK004 - ¿Se documenta que rechazar un registro por email duplicado (AC-31) revela qué emails existen, y se acepta ese riesgo de forma explícita? [Assumption, Spec §US1-2]
-- [ ] CHK005 - ¿Están definidos un largo máximo de contraseña y si hay reglas de complejidad más allá del mínimo de 8 caracteres? [Clarity, Spec §FR-002, §FR-004]
-- [ ] CHK006 - ¿Está especificado de forma inequívoca que el registro nunca puede asignar ni recibir un rol distinto de empleado, aunque se lo pida? [Clarity, Spec §FR-001]
+- [x] CHK001 - ¿Está especificado qué respuesta recibe un login fallido y si debe ser la misma para email inexistente y contraseña incorrecta? [Gap, Spec §FR-003]
+- [x] CHK002 - ¿Está definido si hay límite de intentos de login fallidos o bloqueo temporal, o se excluye explícitamente del alcance? [Gap]
+- [x] CHK003 - ¿Está especificado si la unicidad del email distingue mayúsculas de minúsculas y si se ignoran los espacios al inicio y al final? [Clarity, Spec §FR-002, Key Entities]
+- [x] CHK004 - ¿Se documenta que rechazar un registro por email duplicado (AC-31) revela qué emails existen, y se acepta ese riesgo de forma explícita? [Assumption, Spec §US1-2]
+- [x] CHK005 - ¿Están definidos un largo máximo de contraseña y si hay reglas de complejidad más allá del mínimo de 8 caracteres? [Clarity, Spec §FR-002, §FR-004]
+- [x] CHK006 - ¿Está especificado de forma inequívoca que el registro nunca puede asignar ni recibir un rol distinto de empleado, aunque se lo pida? [Clarity, Spec §FR-001]
 
 ## Sesión
 
-- [ ] CHK007 - ¿Está definido si, además del vencimiento por 24 h de inactividad, la sesión tiene una duración máxima absoluta? [Gap, Spec §FR-005]
-- [ ] CHK008 - ¿Está especificado qué cuenta como "actividad" para renovar el plazo de la sesión? [Clarity, Spec §FR-005]
-- [ ] CHK009 - ¿Está definido qué pasa con las otras sesiones activas del usuario cuando cambia su contraseña? [Gap, Spec §FR-004, §FR-005a]
-- [ ] CHK010 - ¿Está especificado si un usuario puede tener varias sesiones simultáneas y si "Cerrar sesión" afecta solo a la actual? [Gap, Spec §FR-005a]
-- [ ] CHK011 - ¿Distinguen los requisitos entre sesión vencida o cerrada (no autenticado) y falta de permisos (acceso denegado), de forma consistente con el mapeo 401/403? [Consistency, Spec §US6-3, §US6-5, Assumptions]
+- [x] CHK007 - ¿Está definido si, además del vencimiento por 24 h de inactividad, la sesión tiene una duración máxima absoluta? [Gap, Spec §FR-005]
+- [x] CHK008 - ¿Está especificado qué cuenta como "actividad" para renovar el plazo de la sesión? [Clarity, Spec §FR-005]
+- [x] CHK009 - ¿Está definido qué pasa con las otras sesiones activas del usuario cuando cambia su contraseña? [Gap, Spec §FR-004, §FR-005a]
+- [x] CHK010 - ¿Está especificado si un usuario puede tener varias sesiones simultáneas y si "Cerrar sesión" afecta solo a la actual? [Gap, Spec §FR-005a]
+- [x] CHK011 - ¿Distinguen los requisitos entre sesión vencida o cerrada (no autenticado) y falta de permisos (acceso denegado), de forma consistente con el mapeo 401/403? [Consistency, Spec §US6-3, §US6-5, Assumptions]
 
 ## Autorización y roles
 
-- [ ] CHK012 - ¿Está definido el control de acceso para ver y descargar imágenes adjuntas (creador, otros empleados, administrador, no autenticados)? [Gap, Spec §FR-013, §US5-8]
-- [ ] CHK013 - ¿Está especificado que los campos excluidos del detalle del empleado (acción preventiva sugerida, borrador de mail) no se entregan en ninguna respuesta, y no solo que se ocultan en pantalla? [Clarity, Spec §FR-011, §FR-023]
-- [ ] CHK014 - ¿Cubre FR-030 todas las operaciones exclusivas del administrador, incluido ver el detalle de reportes ajenos y sus imágenes? [Completeness, Spec §FR-030, §FR-025]
-- [ ] CHK015 - ¿Son consistentes FR-009a y FR-012 (el administrador como creador) con FR-011, que habla solo de "el empleado"? ¿Está definido si el administrador tiene una lista de "mis reportes"? [Consistency, Spec §FR-009a, §FR-011, §FR-012]
-- [ ] CHK016 - ¿Está especificado si el administrador puede editar descripción y ubicación de reportes Abiertos que no creó? [Ambiguity, Spec §FR-012, §FR-025]
-- [ ] CHK017 - ¿Está definido qué respuesta recibe el acceso a un reporte inexistente y si se diferencia del acceso a uno ajeno? [Gap, Spec §US1-8]
-- [ ] CHK018 - ¿Está especificado qué pasa si al iniciar la aplicación faltan las credenciales del administrador inicial o si ese administrador ya existe con otra contraseña? [Gap, Spec §FR-006, §US4-9]
+- [x] CHK012 - ¿Está definido el control de acceso para ver y descargar imágenes adjuntas (creador, otros empleados, administrador, no autenticados)? [Gap, Spec §FR-013, §US5-8]
+- [x] CHK013 - ¿Está especificado que los campos excluidos del detalle del empleado (acción preventiva sugerida, borrador de mail) no se entregan en ninguna respuesta, y no solo que se ocultan en pantalla? [Clarity, Spec §FR-011, §FR-023]
+- [x] CHK014 - ¿Cubre FR-030 todas las operaciones exclusivas del administrador, incluido ver el detalle de reportes ajenos y sus imágenes? [Completeness, Spec §FR-030, §FR-025]
+- [x] CHK015 - ¿Son consistentes FR-009a y FR-012 (el administrador como creador) con FR-011, que habla solo de "el empleado"? ¿Está definido si el administrador tiene una lista de "mis reportes"? [Consistency, Spec §FR-009a, §FR-011, §FR-012]
+- [x] CHK016 - ¿Está especificado si el administrador puede editar descripción y ubicación de reportes Abiertos que no creó? [Ambiguity, Spec §FR-012, §FR-025]
+- [x] CHK017 - ¿Está definido qué respuesta recibe el acceso a un reporte inexistente y si se diferencia del acceso a uno ajeno? [Gap, Spec §US1-8]
+- [x] CHK018 - ¿Está especificado qué pasa si al iniciar la aplicación faltan las credenciales del administrador inicial o si ese administrador ya existe con otra contraseña? [Gap, Spec §FR-006, §US4-9]
 
 ## Imágenes adjuntas
 
-- [ ] CHK019 - ¿Está especificado si el formato JPG/JPEG/PNG se valida por el contenido real del archivo o solo por la extensión o el tipo declarado? [Clarity, Spec §FR-013]
-- [ ] CHK020 - ¿Está definido cómo se respeta el límite de 5 imágenes cuando llegan subidas simultáneas al mismo reporte? [Edge Case, Gap, Spec §FR-013]
-- [ ] CHK021 - ¿Hay requisitos sobre el manejo del nombre de archivo original y los metadatos de las imágenes (por ejemplo, la ubicación GPS de una foto)? [Gap, Spec §FR-013]
+- [x] CHK019 - ¿Está especificado si el formato JPG/JPEG/PNG se valida por el contenido real del archivo o solo por la extensión o el tipo declarado? [Clarity, Spec §FR-013]
+- [x] CHK020 - ¿Está definido cómo se respeta el límite de 5 imágenes cuando llegan subidas simultáneas al mismo reporte? [Edge Case, Gap, Spec §FR-013]
+- [x] CHK021 - ¿Hay requisitos sobre el manejo del nombre de archivo original y los metadatos de las imágenes (por ejemplo, la ubicación GPS de una foto)? [Gap, Spec §FR-013]
 
 ## Secretos y datos sensibles
 
-- [ ] CHK022 - ¿Enumera FR-031 todos los secretos del sistema (por ejemplo, una clave de firma de sesión) y no solo la clave de la IA y las credenciales del administrador? [Completeness, Spec §FR-031]
-- [ ] CHK023 - ¿Hay un requisito de que contraseñas, la clave de la IA y los identificadores de sesión no aparezcan en logs ni en mensajes de error? [Gap]
-- [ ] CHK024 - ¿Está especificado qué datos del reporte y del usuario se envían al servicio externo de IA (por ejemplo, si se excluye el email del creador)? [Clarity, Spec §FR-015, Assumptions]
-- [ ] CHK025 - ¿Es un requisito verificable el aviso a los usuarios de que el contenido se envía a un servicio externo, o queda solo como supuesto? [Assumption, Spec §Assumptions]
-- [ ] CHK026 - ¿Están definidos requisitos de transporte cifrado (HTTPS) o se dejan explícitamente fuera del alcance de v1? [Gap]
-- [ ] CHK027 - ¿Se contempla que una descripción armada a propósito manipule la criticidad devuelta por la IA con un valor válido pero incorrecto, y se acepta o mitiga ese riesgo? [Gap, Spec §FR-014, Edge Cases]
-- [ ] CHK028 - ¿Hay requisitos para registrar eventos de seguridad (logins fallidos, accesos denegados, cambios de estado) o se excluyen de forma explícita? [Gap]
+- [x] CHK022 - ¿Enumera FR-031 todos los secretos del sistema (por ejemplo, una clave de firma de sesión) y no solo la clave de la IA y las credenciales del administrador? [Completeness, Spec §FR-031]
+- [x] CHK023 - ¿Hay un requisito de que contraseñas, la clave de la IA y los identificadores de sesión no aparezcan en logs ni en mensajes de error? [Gap]
+- [x] CHK024 - ¿Está especificado qué datos del reporte y del usuario se envían al servicio externo de IA (por ejemplo, si se excluye el email del creador)? [Clarity, Spec §FR-015, Assumptions]
+- [x] CHK025 - ¿Es un requisito verificable el aviso a los usuarios de que el contenido se envía a un servicio externo, o queda solo como supuesto? [Assumption, Spec §Assumptions]
+- [x] CHK026 - ¿Están definidos requisitos de transporte cifrado (HTTPS) o se dejan explícitamente fuera del alcance de v1? [Gap]
+- [x] CHK027 - ¿Se contempla que una descripción armada a propósito manipule la criticidad devuelta por la IA con un valor válido pero incorrecto, y se acepta o mitiga ese riesgo? [Gap, Spec §FR-014, Edge Cases]
+- [x] CHK028 - ¿Hay requisitos para registrar eventos de seguridad (logins fallidos, accesos denegados, cambios de estado) o se excluyen de forma explícita? [Gap]
 
 ## Calidad y trazabilidad de los criterios de aceptación
 
-- [ ] CHK029 - ¿Tiene cada requisito de control de acceso (FR-003, FR-011, FR-012, FR-030) al menos un escenario de aceptación con su ID de AC del PRD? [Traceability, Spec §FR-030]
-- [ ] CHK030 - ¿Tienen los requisitos agregados en la clarificación (FR-005a, FR-009a, y la visibilidad de FR-011) su RF/AC en el PRD, como exige la constitución, o hay que actualizar el PRD? [Conflict, Spec §Clarifications]
-- [ ] CHK031 - ¿Está enumerado en la spec el "100% de los escenarios de control de acceso del PRD" de SC-004, para medirlo sin depender del PRD? [Measurability, Spec §SC-004]
-- [ ] CHK032 - ¿Hay escenarios de aceptación con acceso denegado para el empleado en cada operación de administración, incluida la creación y edición de reportes ajenos por parte de otro empleado? [Coverage, Spec §US3-2, §US4-8, §US5-6]
-- [ ] CHK033 - ¿Indica la verificación del hash de contraseñas (AC-47) qué algoritmos se consideran "hash seguro", para que se pueda evaluar objetivamente? [Measurability, Spec §FR-007, §US6-4]
+- [x] CHK029 - ¿Tiene cada requisito de control de acceso (FR-003, FR-011, FR-012, FR-030) al menos un escenario de aceptación con su ID de AC del PRD? [Traceability, Spec §FR-030]
+- [x] CHK030 - ¿Tienen los requisitos agregados en la clarificación (FR-005a, FR-009a, y la visibilidad de FR-011) su RF/AC en el PRD, como exige la constitución, o hay que actualizar el PRD? [Conflict, Spec §Clarifications]
+- [x] CHK031 - ¿Está enumerado en la spec el "100% de los escenarios de control de acceso del PRD" de SC-004, para medirlo sin depender del PRD? [Measurability, Spec §SC-004]
+- [x] CHK032 - ¿Hay escenarios de aceptación con acceso denegado para el empleado en cada operación de administración, incluida la creación y edición de reportes ajenos por parte de otro empleado? [Coverage, Spec §US3-2, §US4-8, §US5-6]
+- [x] CHK033 - ¿Indica la verificación del hash de contraseñas (AC-47) qué algoritmos se consideran "hash seguro", para que se pueda evaluar objetivamente? [Measurability, Spec §FR-007, §US6-4]
 
 ## Notes
 
@@ -69,3 +69,4 @@ aceptación sean medibles y trazables a los RF/AC del PRD. Revisión estándar p
 - `checklists/requirements.md` has a separate built-in lifecycle maintained by `/speckit-specify` and `/speckit-clarify`
 - Generado solo a partir de `spec.md` y la constitución: todavía no existen `plan.md` ni `tasks.md`.
 - La constitución (Principio V) fija bcrypt o argon2; CHK033 revisa si la spec lo refleja de forma verificable.
+- Evaluado el 2026-10-21 por el agente, a pedido del revisor, contra spec.md, plan.md, research.md, data-model.md y contracts/. Los ítems que quedaron abiertos en esa evaluación se cerraron después con decisiones del revisor, registradas en la sección Clarifications de spec.md, y con la enmienda del PRD.

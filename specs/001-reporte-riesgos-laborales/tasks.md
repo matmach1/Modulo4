@@ -20,7 +20,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 - **[P]**: se puede hacer en paralelo (archivos distintos, sin dependencias pendientes)
 - **[Story]**: user story a la que pertenece (US1…US6)
-- ⛔ **BLOQUEADA (PRD)**: no implementar hasta completar T006 (enmienda del PRD), según la constitución
+- Las tareas antes marcadas como bloqueadas por el PRD (T085–T087, T107–T110) quedaron desbloqueadas: el PRD se enmendó en T006
 
 ## Path Conventions
 
@@ -39,7 +39,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T003 Agregar paquetes NuGet: `Microsoft.EntityFrameworkCore.Sqlite`, `Microsoft.EntityFrameworkCore.Design` y `BCrypt.Net-Next` a `backend/src/Riesgos.Core/Riesgos.Core.csproj`; `Anthropic` **solo** a `backend/src/Riesgos.Clasificacion/Riesgos.Clasificacion.csproj`; `Microsoft.AspNetCore.Mvc.Testing` y `Microsoft.Extensions.TimeProvider.Testing` a `backend/tests/Riesgos.Api.Tests/Riesgos.Api.Tests.csproj`; `Microsoft.Extensions.TimeProvider.Testing` a `backend/tests/Riesgos.Core.Tests/Riesgos.Core.Tests.csproj`
 - [ ] T004 [P] Crear el frontend con Vite 5 + React 18 en `frontend/` (`package.json` con scripts `dev`, `build`, `test`; dependencias `react-router-dom`; devDependencies `vitest`, `@testing-library/react`, `@testing-library/user-event`, `jsdom`), y `frontend/vite.config.js` con proxy `/api` → `http://localhost:5000` y configuración de Vitest (`environment: 'jsdom'`)
 - [ ] T005 [P] Crear `.gitignore` en la raíz (excluir `bin/`, `obj/`, `node_modules/`, `data/`, `*.db`, `.env`) y `.env.example` solo con los nombres `API_KEY=`, `ADMIN_EMAIL=`, `ADMIN_PASSWORD=`, `CLAUDE_MODEL=` sin valores (AC-46)
-- [ ] T006 [P] Enmendar `PRD.md` en un commit propio: agregar RF y AC para cerrar sesión (FR-005a: invalida la sesión en el servidor, uso posterior ⇒ 401) y para el orden opcional por criticidad del listado global (FR-024: Crítica, Alta, Media, Baja, Pendiente; fecha desc. dentro de cada nivel; orden desconocido ⇒ 400), y aclarar AC-40/AC-41 para la clasificación en segundo plano (desbloquea T086–T087 y T107–T110)
+- [x] T006 [P] Enmendar `PRD.md` en un commit propio: agregar RF y AC para cerrar sesión (FR-005a: invalida la sesión en el servidor, uso posterior ⇒ 401) y para el orden opcional por criticidad del listado global (FR-024: Crítica, Alta, Media, Baja, Pendiente; fecha desc. dentro de cada nivel; orden desconocido ⇒ 400), y aclarar AC-40/AC-41 para la clasificación en segundo plano (desbloquea T086–T087 y T107–T110)
 
 ---
 
@@ -53,7 +53,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 - [ ] T007 [P] Test de arquitectura en `backend/tests/Riesgos.Core.Tests/ArquitecturaTests.cs`: el ensamblado `Riesgos.Core` y `Riesgos.Api` no referencian el ensamblado `Anthropic` directamente (Principio I) [Trait("FR","FR-014")]
 - [ ] T008 [P] Tests del validador de textos en `backend/tests/Riesgos.Core.Tests/Validacion/TextoTests.cs`: recorta espacios, un texto solo con espacios es vacío, respeta largos máximos (R8)
-- [ ] T009 [P] Tests del handler de sesión en `backend/tests/Riesgos.Api.Tests/Auth/SesionTests.cs`: request sin cookie a un endpoint protegido ⇒ 401 (AC-12); login con credenciales válidas ⇒ 200 + cookie `HttpOnly`/`SameSite=Strict`; login con email inexistente y con contraseña incorrecta ⇒ 401 con el mismo mensaje (R4); `UltimaActividad` se renueva
+- [ ] T009 [P] Tests del handler de sesión en `backend/tests/Riesgos.Api.Tests/Auth/SesionTests.cs`: request sin cookie a un endpoint protegido ⇒ 401 (AC-12); login con credenciales válidas ⇒ 200 + cookie `HttpOnly`/`SameSite=Strict`; login con email inexistente y con contraseña incorrecta ⇒ 401 con el mismo mensaje (R4); `UltimaActividad` se renueva; fuera de Development, un request HTTP ⇒ redirección a HTTPS y las respuestas HTTPS incluyen `Strict-Transport-Security` (FR-032, AC-74)
 
 ### Dominio y persistencia
 
@@ -70,7 +70,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T017 Implementar `ServicioSesiones` (crear token aleatorio de 256 bits, guardar SHA-256, validar vigencia con `TimeProvider`, renovar `UltimaActividad` como máximo una vez por minuto, borrar sesión, borrar las demás sesiones de un usuario) en `backend/src/Riesgos.Core/Servicios/ServicioSesiones.cs`
 - [ ] T018 Implementar `SesionAuthenticationHandler` (lee la cookie `riesgos_sesion`, valida con `ServicioSesiones`, emite claims `sub` y `role`) y las políticas `Empleado`/`Administrador` en `backend/src/Riesgos.Api/Auth/SesionAuthenticationHandler.cs` y `backend/src/Riesgos.Api/Auth/Politicas.cs`
 - [ ] T019 Implementar `POST /api/auth/login` y `GET /api/auth/yo` en `backend/src/Riesgos.Api/Endpoints/AuthEndpoints.cs` (cookie `HttpOnly`, `Secure`, `SameSite=Strict`; mismo 401 para email o contraseña incorrectos) (hace pasar T009)
-- [ ] T020 [P] Configurar `ProblemDetails`, mapeo `ErrorValidacion` ⇒ 400, `DbUpdateConcurrencyException` ⇒ 409, y logging estructurado sin datos sensibles en `backend/src/Riesgos.Api/Infraestructura/Errores.cs` y `backend/src/Riesgos.Api/Program.cs` (R8, R13)
+- [ ] T020 [P] Configurar `ProblemDetails`, mapeo `ErrorValidacion` ⇒ 400, `DbUpdateConcurrencyException` ⇒ 409, logging estructurado sin datos sensibles, y `UseHttpsRedirection` + `UseHsts` fuera de Development (FR-032) en `backend/src/Riesgos.Api/Infraestructura/Errores.cs` y `backend/src/Riesgos.Api/Program.cs` (R8, R13)
 - [ ] T021 Implementar el seed del administrador inicial (`ADMIN_EMAIL`/`ADMIN_PASSWORD`; si ya existe un admin no se modifica; si no existe y faltan las variables, la app no arranca con un mensaje claro) en `backend/src/Riesgos.Api/Infraestructura/SeedAdministrador.cs` (FR-006, R12)
 
 ### Módulo de clasificación (interfaces y cola)
@@ -106,7 +106,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 ### Tests for User Story 1 ⚠️ (escribir primero, deben fallar)
 
 - [ ] T033 [P] [US1] Tests de registro en `backend/tests/Riesgos.Api.Tests/US1/RegistroTests.cs`: AC-13 (crea y permite login), AC-31 (email duplicado ⇒ 409, también con distinta capitalización), AC-63 (registros simultáneos con el mismo email ⇒ un 201 y el resto 409, una sola cuenta), AC-64 (email inválido ⇒ 400), AC-65 (contraseña < 8 ⇒ 400), rol asignado siempre `Empleado` aunque el body pida otro (FR-001)
-- [ ] T034 [P] [US1] Tests de creación en `backend/tests/Riesgos.Api.Tests/US1/CrearReporteTests.cs`: AC-27 (201, estado Abierto, clasificación `Pendiente`, responde sin esperar la IA), AC-01 (descripción vacía ⇒ 400), AC-28 (ubicación vacía ⇒ 400), AC-67 (descripción > 2.000 ⇒ 400 y el `ClasificadorSimulado` no recibió llamadas), AC-68 (ubicación > 200 ⇒ 400), texto solo con espacios ⇒ 400, `categoriaSugerida` inválida ⇒ 400, el administrador también puede crear (FR-009a)
+- [ ] T034 [P] [US1] Tests de creación en `backend/tests/Riesgos.Api.Tests/US1/CrearReporteTests.cs`: AC-27 (201, estado Abierto), AC-75 (con el clasificador sin responder, responde de inmediato con clasificación `Pendiente`), AC-01 (descripción vacía ⇒ 400), AC-28 (ubicación vacía ⇒ 400), AC-67 (descripción > 2.000 ⇒ 400 y el `ClasificadorSimulado` no recibió llamadas), AC-68 (ubicación > 200 ⇒ 400), texto solo con espacios ⇒ 400, `categoriaSugerida` inválida ⇒ 400, el administrador también puede crear (FR-009a)
 - [ ] T035 [P] [US1] Tests de "mis reportes" en `backend/tests/Riesgos.Api.Tests/US1/MisReportesTests.cs`: AC-29 (A solo recibe los suyos), AC-12 (sin sesión ⇒ 401), orden por fecha desc.
 - [ ] T036 [P] [US1] Tests de detalle en `backend/tests/Riesgos.Api.Tests/US1/DetalleReporteTests.cs`: AC-50 (creador ⇒ 200), AC-17 (fecha, hora y email del creador), AC-04 (otro empleado ⇒ 403), reporte inexistente ⇒ 404, el detalle del empleado no contiene las propiedades `accionSugerida` ni `borradorMail` (FR-011)
 
@@ -147,7 +147,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T053 [US2] Implementar `ClasificacionWorker : BackgroundService` que consume la `ColaClasificacion` y llama al procesador (una excepción no detiene el worker) en `backend/src/Riesgos.Api/Infraestructura/ClasificacionWorker.cs`
 - [ ] T054 [P] [US2] Escribir el borrador de la base de conocimiento con definiciones de los 5 tipos, las 4 categorías (incluido cuándo usar "Otro") y criterios para Baja/Media/Alta/Crítica, en `backend/src/Riesgos.Clasificacion/kb.md` (copiado al output como contenido; pendiente de validación por Seguridad e Higiene)
 - [ ] T055 [P] [US2] Implementar `MapeadorRespuesta` (JSON ⇒ `ResultadoClasificacion`, igualdad exacta contra los textos del JSON Schema) en `backend/src/Riesgos.Clasificacion/MapeadorRespuesta.cs` (hace pasar T050)
-- [ ] T056 [US2] Implementar `ClasificadorClaude : IClasificadorReportes` con el SDK oficial: `ApiKey` desde `API_KEY`, reintentos en 0, modelo desde `CLAUDE_MODEL` (por defecto `claude-opus-5-5`), effort `low`, `MaxTokens` 256, system = instrucciones + `kb.md` con `CacheControlEphemeral`, mensaje de usuario solo texto, `OutputConfig.Format = JsonOutputFormat` con el schema de [contracts/clasificador.md](contracts/clasificador.md); errores del SDK y cancelación ⇒ `Falla` (sin `API_KEY` ⇒ `Falla(SinApiKey)` y advertencia al inicio), en `backend/src/Riesgos.Clasificacion/ClasificadorClaude.cs`
+- [ ] T056 [US2] Implementar `ClasificadorClaude : IClasificadorReportes` con el SDK oficial: `ApiKey` desde `API_KEY`, reintentos en 0, modelo desde `CLAUDE_MODEL` (por defecto `claude-opus-5-5`), effort `low`, `MaxTokens` 256, system = instrucciones (incluida la de tratar el texto del reporte solo como dato e ignorar instrucciones que contenga) + `kb.md` con `CacheControlEphemeral`, mensaje de usuario solo texto, `OutputConfig.Format = JsonOutputFormat` con el schema de [contracts/clasificador.md](contracts/clasificador.md); errores del SDK y cancelación ⇒ `Falla` (sin `API_KEY` ⇒ `Falla(SinApiKey)` y advertencia al inicio), en `backend/src/Riesgos.Clasificacion/ClasificadorClaude.cs`
 - [ ] T057 [US2] Registrar en DI `IClasificadorReportes` ⇒ `ClasificadorClaude`, `IColaClasificacion` ⇒ `ColaClasificacion` (singleton), `ProcesadorClasificacion` y `ClasificacionWorker` en `backend/src/Riesgos.Api/Program.cs`; en `ApiFactory` la `ColaClasificacionManual` usa el procesador real con el `ClasificadorSimulado` (hace pasar T051)
 - [ ] T058 [US2] Mostrar en el detalle tipo, categoría y criticidad (o "Pendiente de clasificación") y la categoría sugerida si la hay, con polling cada 2 s hasta 15 s mientras esté pendiente, en `frontend/src/pages/DetalleReporte.jsx` y `frontend/src/hooks/usePollingClasificacion.js`
 - [ ] T059 [P] [US2] Test de frontend del polling (deja de consultar al llegar la clasificación o a los 15 s) en `frontend/src/__tests__/US2.test.jsx`
@@ -179,7 +179,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T069 [US3] Implementar `ServicioAdministracion.ListarAsync(page, size)` (por defecto 20, valida 1–100, orden `FechaCreacion DESC, Id DESC`, total) y `PanelAsync()` (solo estado Abierto) en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs`
 - [ ] T070 [US3] Completar el armado del detalle para el administrador (acción sugerida, borrador, categoría sugerida y automática) en `backend/src/Riesgos.Api/Dtos/ReporteDetalleMapper.cs`
 - [ ] T071 [US3] Implementar `GET /api/admin/reportes` y `GET /api/admin/panel` con la política `Administrador` en `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs` (hace pasar T061–T063)
-- [ ] T072 [P] [US3] Crear la página del panel (dos contadores, enlaces al listado) en `frontend/src/pages/Panel.jsx`
+- [ ] T072 [P] [US3] Crear la página del panel (dos contadores que muestran 0 cuando no hay reportes, enlaces al listado; FR-033) en `frontend/src/pages/Panel.jsx`
 - [ ] T073 [P] [US3] Crear la página del listado global (paginación con total, estado y criticidad por fila, estado vacío) en `frontend/src/pages/ListadoAdmin.jsx`
 - [ ] T074 [US3] Agregar al detalle, solo para admin, la acción sugerida destacada, ambas categorías cuando difieren y el borrador con botón "Copiar" en `frontend/src/components/DetalleAdmin.jsx` y `frontend/src/pages/DetalleReporte.jsx`
 - [ ] T075 [P] [US3] Tests de frontend del panel, el listado y el borrador en `frontend/src/__tests__/US3.test.jsx`
@@ -197,7 +197,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 ### Tests for User Story 4 ⚠️ (escribir primero, deben fallar)
 
 - [ ] T076 [P] [US4] Tests unitarios de la máquina de estados en `backend/tests/Riesgos.Core.Tests/Dominio/ReporteEstadosTests.cs`, cubriendo cada fila de la tabla de transiciones de [data-model.md](data-model.md): Abierto ⇒ En Progreso registra fecha y admin; En Progreso ⇒ Cerrado con ambos textos registra fecha y admin; Abierto ⇒ Cerrado, En Progreso ⇒ Abierto, desde Cerrado y al mismo estado ⇒ conflicto; cerrar sin acción realizada o sin observación (o solo espacios) ⇒ validación
-- [ ] T077 [P] [US4] Tests de cambio de estado en `backend/tests/Riesgos.Api.Tests/US4/EstadoTests.cs`: AC-15, AC-34 (409 y sigue Abierto), AC-33 (409 y sigue Cerrado), AC-25 (400 y sigue En Progreso), AC-35 y AC-18 (Cerrado; textos, fecha, hora y usuario de cierre en el detalle), cierre sin acciones correctivas registradas ⇒ OK (FR-029), AC-16 (empleado ⇒ 403), dos cambios simultáneos ⇒ uno OK y el otro 409 (R7)
+- [ ] T077 [P] [US4] Tests de cambio de estado en `backend/tests/Riesgos.Api.Tests/US4/EstadoTests.cs`: AC-15, AC-34 (409 y sigue Abierto), AC-33 (409 y sigue Cerrado), AC-25 (400 y sigue En Progreso), AC-35 y AC-18 (Cerrado; textos, fecha, hora y usuario de cierre en el detalle), cierre sin acciones correctivas registradas ⇒ OK (FR-029), un reporte "Pendiente de clasificación" pasa a En Progreso y a Cerrado igual que uno clasificado (FR-027), cambiar el estado o registrar una acción no encola ninguna clasificación (FR-017), AC-16 (empleado ⇒ 403), dos cambios simultáneos ⇒ uno OK y el otro 409 (R7)
 - [ ] T078 [P] [US4] Tests de acciones correctivas en `backend/tests/Riesgos.Api.Tests/US4/AccionesTests.cs`: AC-24 (se guarda y aparece en el detalle), AC-54 (fecha del registro y admin responsable), AC-55 (reporte Cerrado ⇒ 409), en Abierto ⇒ OK (FR-028), descripción vacía o > 1.000 ⇒ 400, AC-37 (empleado ⇒ 403), el empleado creador ve las acciones en su detalle (FR-011)
 
 ### Implementation for User Story 4
@@ -206,14 +206,14 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T080 [P] [US4] Crear entidad `AccionCorrectiva` (`ReporteId`, `Descripcion` string(1000), `Fecha`, `ResponsableId`) en `backend/src/Riesgos.Core/Dominio/AccionCorrectiva.cs`, su configuración y la migración `AccionesCorrectivas`
 - [ ] T081 [US4] Implementar `ServicioAdministracion.CambiarEstadoAsync` y `RegistrarAccionAsync` (rechaza reportes Cerrados; incrementa `RowVersion`) en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs`
 - [ ] T082 [US4] Implementar `POST /api/admin/reportes/{id}/estado` y `POST /api/admin/reportes/{id}/acciones` en `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs`, e incluir inicio de progreso, cierre y acciones (ordenadas por fecha asc.) en el detalle de ambos roles en `backend/src/Riesgos.Api/Dtos/ReporteDetalleMapper.cs` (hace pasar T077–T078)
-- [ ] T083 [US4] Agregar al detalle, solo para admin, los botones "Pasar a En Progreso" y "Cerrar" (formulario con acción realizada y observación) y el formulario de nueva acción; mostrar a ambos roles las acciones y los datos de cierre; ante 409 avisar y recargar, en `frontend/src/components/GestionReporte.jsx` y `frontend/src/pages/DetalleReporte.jsx`
+- [ ] T083 [US4] Agregar al detalle, solo para admin, los botones "Pasar a En Progreso" y "Cerrar" (formulario con acción realizada y observación) y el formulario de nueva acción; mostrar a ambos roles las acciones (o "Sin acciones registradas", FR-033) y los datos de cierre; ante 409 avisar y recargar, en `frontend/src/components/GestionReporte.jsx` y `frontend/src/pages/DetalleReporte.jsx`
 - [ ] T084 [P] [US4] Tests de frontend de la gestión (botones visibles solo en estados válidos, validación del cierre) en `frontend/src/__tests__/US4.test.jsx`
 
 **Checkpoint**: US1–US4 funcionan; el ciclo completo Abierto ⇒ Cerrado queda trazado.
 
-### Orden por criticidad (FR-024) — ⛔ BLOQUEADA (PRD) hasta T006
+### Orden por criticidad (FR-024, RF-02e)
 
-- [ ] T085 [P] [US3] Tests en `backend/tests/Riesgos.Api.Tests/US3/ListadoAdminTests.cs`: `orden=criticidad` ⇒ Crítica, Alta, Media, Baja, Pendiente y fecha desc. dentro de cada nivel; `orden` desconocido ⇒ 400; sin `orden` ⇒ por fecha
+- [ ] T085 [P] [US3] Tests en `backend/tests/Riesgos.Api.Tests/US3/ListadoAdminTests.cs`: AC-70 `orden=criticidad` ⇒ Crítica, Alta, Media, Baja, Pendiente y fecha desc. dentro de cada nivel; AC-71 `orden` desconocido ⇒ 400; sin `orden` ⇒ por fecha
 - [ ] T086 [US3] Agregar el parámetro `orden` (`fecha` | `criticidad`) a `ServicioAdministracion.ListarAsync` (orden `RangoCriticidad, FechaCreacion DESC, Id DESC`) y a `GET /api/admin/reportes` en `backend/src/Riesgos.Core/Servicios/ServicioAdministracion.cs` y `backend/src/Riesgos.Api/Endpoints/AdminEndpoints.cs`
 - [ ] T087 [US3] Agregar el selector de orden al listado en `frontend/src/pages/ListadoAdmin.jsx`
 
@@ -229,7 +229,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 - [ ] T088 [P] [US5] Tests de edición en `backend/tests/Riesgos.Api.Tests/US5/EditarReporteTests.cs`: AC-10 (guarda ambos valores), AC-61 (campo vacío ⇒ 400 y no cambia), AC-69 (descripción > 2.000 ⇒ 400, no cambia, sin llamada al clasificador), la edición responde con clasificación `Pendiente` sin esperar, AC-52 (tras procesar, queda la nueva clasificación), AC-57 (el asunto del borrador refleja la nueva categoría y criticidad), AC-59 (falla ⇒ edición guardada y `Pendiente`), AC-62 (asunto con "Pendiente de clasificación"), dos ediciones seguidas con la cola sin procesar ⇒ solo se guarda el resultado de la última (FR-017), AC-11 (En Progreso o Cerrado ⇒ 409 y no cambia), AC-36 (otro empleado ⇒ 403), el admin edita un reporte propio Abierto (FR-009a)
 - [ ] T089 [P] [US5] Tests unitarios de validación de imágenes en `backend/tests/Riesgos.Core.Tests/Imagenes/ValidadorImagenTests.cs`: firma JPEG `FF D8 FF` y PNG `89 50 4E 47` con extensión válida ⇒ OK; `.txt` renombrado a `.jpg` ⇒ inválido; > 2.097.152 bytes ⇒ inválido; extensión no permitida ⇒ inválido
-- [ ] T090 [P] [US5] Tests de imágenes en `backend/tests/Riesgos.Api.Tests/US5/ImagenesTests.cs`: AC-19 (sexta ⇒ 400, siguen 5), AC-20 (formato inválido ⇒ 400), AC-21 (> 2 MB ⇒ 400), AC-22 (el detalle lista las imágenes del reporte), AC-53 (En Progreso o Cerrado ⇒ 409, cantidad igual), más de un archivo en la misma request ⇒ 400 (FR-013), dos subidas simultáneas con 4 cargadas ⇒ el reporte queda con 5 (R6), FR-013a (descarga: creador y admin ⇒ 200 con `Content-Type`; otro empleado ⇒ 403; sin sesión ⇒ 401; imagen de otro reporte ⇒ 404)
+- [ ] T090 [P] [US5] Tests de imágenes en `backend/tests/Riesgos.Api.Tests/US5/ImagenesTests.cs`: AC-19 (sexta ⇒ 400, siguen 5), AC-20 (formato inválido ⇒ 400), AC-21 (> 2 MB ⇒ 400), AC-22 (el detalle lista las imágenes del reporte), AC-53 (En Progreso o Cerrado ⇒ 409, cantidad igual), más de un archivo en la misma request ⇒ 400 (FR-013), dos subidas simultáneas con 4 cargadas ⇒ el reporte queda con 5 (R6), FR-013a y AC-73 (descarga: creador y admin ⇒ 200 con `Content-Type`; otro empleado ⇒ 403; sin sesión ⇒ 401; imagen de otro reporte ⇒ 404)
 - [ ] T091 [P] [US5] Completar AC-23 en `backend/tests/Riesgos.Api.Tests/US2/ClasificacionTests.cs`: reporte con imágenes adjuntas, al reclasificar la entrada registrada por el `ClasificadorSimulado` no contiene contenido de imagen
 
 ### Implementation for User Story 5
@@ -240,7 +240,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T095 [P] [US5] Implementar `ValidadorImagen` (firma de bytes + extensión + tamaño) en `backend/src/Riesgos.Core/Imagenes/ValidadorImagen.cs` (hace pasar T089)
 - [ ] T096 [US5] Implementar `ServicioImagenes.AdjuntarAsync` (creador, estado Abierto, conteo < 5 e inserción en una transacción, guarda en `data/imagenes/{guid}.{ext}` configurable) y `ObtenerAsync` (verificación de acceso igual que el reporte) en `backend/src/Riesgos.Core/Servicios/ServicioImagenes.cs`
 - [ ] T097 [US5] Implementar `POST /api/reportes/{id}/imagenes` (multipart, un solo archivo `archivo`, `RequestSizeLimit` acorde a 2 MB) y `GET /api/reportes/{id}/imagenes/{imagenId}` en `backend/src/Riesgos.Api/Endpoints/ImagenesEndpoints.cs`, e incluir `imagenes` con `url` en el detalle (hace pasar T090–T091)
-- [ ] T098 [US5] Agregar al detalle, para el creador y solo en Abierto, el formulario de edición y la subida de una imagen por vez (muestra cuántas quedan de 5); mostrar a creador y admin la galería con las imágenes, en `frontend/src/components/EditarReporte.jsx`, `frontend/src/components/Imagenes.jsx` y `frontend/src/pages/DetalleReporte.jsx`
+- [ ] T098 [US5] Agregar al detalle, para el creador y solo en Abierto, el formulario de edición y la subida de una imagen por vez (muestra cuántas quedan de 5); mostrar a creador y admin la galería con las imágenes (o "Sin imágenes", FR-033), en `frontend/src/components/EditarReporte.jsx`, `frontend/src/components/Imagenes.jsx` y `frontend/src/pages/DetalleReporte.jsx`
 - [ ] T099 [P] [US5] Tests de frontend de edición e imágenes (oculto fuera de Abierto, errores de validación de archivo) en `frontend/src/__tests__/US5.test.jsx`
 
 **Checkpoint**: US1–US5 funcionan; la edición reclasifica y las imágenes respetan límites y acceso.
@@ -266,9 +266,9 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T105 [P] [US6] Crear la página "Cambiar contraseña" en `frontend/src/pages/CambiarPassword.jsx`
 - [ ] T106 [P] [US6] Test de frontend del cambio de contraseña en `frontend/src/__tests__/US6.test.jsx`
 
-### Cerrar sesión (FR-005a) — ⛔ BLOQUEADA (PRD) hasta T006
+### Cerrar sesión (FR-005a, RF-42)
 
-- [ ] T107 [P] [US6] Test en `backend/tests/Riesgos.Api.Tests/US6/LogoutTests.cs`: tras `POST /api/auth/logout` (204), repetir un request con la misma cookie ⇒ 401; sin sesión ⇒ 401
+- [ ] T107 [P] [US6] Test en `backend/tests/Riesgos.Api.Tests/US6/LogoutTests.cs`: AC-72, tras `POST /api/auth/logout` (204), repetir un request con la misma cookie ⇒ 401; sin sesión ⇒ 401
 - [ ] T108 [US6] Implementar `POST /api/auth/logout` (borra la sesión y expira la cookie) en `backend/src/Riesgos.Api/Endpoints/AuthEndpoints.cs`
 - [ ] T109 [US6] Agregar el botón "Cerrar sesión" al layout y `logout` al contexto en `frontend/src/App.jsx` y `frontend/src/auth/AuthContext.jsx`
 - [ ] T110 [P] [US6] Test de frontend del cierre de sesión en `frontend/src/__tests__/US6.test.jsx`
@@ -284,9 +284,10 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [ ] T111 [P] Implementar `Riesgos.Evaluacion`: lee `datasets/validacion-v{N}.csv` (columnas descripcion, ubicacion, tipo, categoria, criticidad), clasifica cada caso con `ClasificadorClaude`, reporta aciertos por campo (los `Pendiente` cuentan como error) y p95 de latencia, en `backend/tools/Riesgos.Evaluacion/Program.cs` (SC-002, SC-003, AC-05, AC-45; fuera de `dotnet test`)
 - [ ] T112 [P] Crear `datasets/README.md` con el formato esperado del dataset, la regla de versionado y que debe correrse T111 al cambiar modelo, prompt o `kb.md`
 - [ ] T113 [P] Revisar los logs: que la clasificación, los logins fallidos y los accesos denegados se registren sin texto de reportes, contraseñas, tokens ni API key (R13), en `backend/src/Riesgos.Api/` y `backend/src/Riesgos.Core/`
-- [ ] T114 [P] Verificar que cada AC del PRD (AC-01…AC-69, salvo AC-05/AC-45/AC-46 que se validan fuera de `dotnet test`) tiene al menos un test con su `Trait`; agregar los que falten en `backend/tests/`
-- [ ] T115 [P] Actualizar `AGENTS.md` con cómo correr la herramienta de evaluación (las variables de entorno ya están documentadas)
-- [ ] T116 Ejecutar la validación completa de [quickstart.md](quickstart.md): `dotnet test`, `npm test`, recorrido manual y chequeo de secretos (AC-46)
+- [ ] T114 [P] Verificar que cada AC del PRD (AC-01…AC-75, salvo AC-05/AC-45, que valida T111, y AC-46, que valida T117) tiene al menos un test con su `Trait`; agregar los que falten en `backend/tests/`
+- [ ] T115 [P] Actualizar `AGENTS.md` con cómo correr la herramienta de evaluación y el procedimiento operativo para reemplazar al único administrador (FR-006) (las variables de entorno ya están documentadas)
+- [ ] T116 Ejecutar la validación completa de [quickstart.md](quickstart.md): `dotnet test`, `npm test`, recorrido manual y `scripts/verificar-secretos.sh` (AC-46)
+- [ ] T117 [P] Crear `scripts/verificar-secretos.sh` (AC-46): falla si algún archivo versionado contiene el valor de `API_KEY` o `ADMIN_PASSWORD` (cuando están definidas), un archivo `.env` versionado o un patrón de clave de Anthropic (`sk-ant-`); documentar su uso en [quickstart.md](quickstart.md)
 
 ---
 
@@ -302,7 +303,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - **US4 (Phase 6)**: depende de US1; el detalle admin de US3 (T070) para mostrar la gestión.
 - **US5 (Phase 7)**: depende de US1 y US2 (reclasificación); T092 usa el borrador de US3 (T066).
 - **US6 (Phase 8)**: depende solo de Foundational (sesiones) y de US1 (registro) para los tests.
-- **Tareas ⛔ BLOQUEADAS**: T085–T087 y T107–T110 dependen de T006 (enmienda del PRD).
+- **T085–T087 y T107–T110**: dependían de T006 (enmienda del PRD), ya completada.
 - **Polish (Phase 9)**: depende de las user stories que se quieran entregar.
 
 ### User Story Dependencies

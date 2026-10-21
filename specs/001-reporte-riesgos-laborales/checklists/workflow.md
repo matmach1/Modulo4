@@ -13,51 +13,51 @@ trazables. Revisión estándar previa a `/speckit-plan`.
 
 ## Transiciones de estado
 
-- [ ] CHK001 - ¿Están enumeradas todas las transiciones prohibidas, incluida En Progreso → Abierto, que hoy no tiene escenario de aceptación? [Coverage, Spec §FR-027, §US4-2, §US4-3]
-- [ ] CHK002 - ¿Está definido qué respuesta recibe un pedido de transición al mismo estado (por ejemplo, Abierto → Abierto)? [Edge Case, Gap, Spec §FR-027]
-- [ ] CHK003 - ¿Está especificado si el paso a En Progreso registra fecha, hora y administrador, como sí lo hace el cierre? [Gap, Spec §US4-1, §FR-029]
-- [ ] CHK004 - ¿Está definido si se guarda un historial de cambios de estado o solo el estado actual y los datos de cierre? [Gap, Key Entities]
-- [ ] CHK005 - ¿Está especificado si el paso a En Progreso exige algún dato (responsable, comentario) o es solo un cambio de estado? [Clarity, Spec §FR-027]
-- [ ] CHK006 - ¿Está definido cuántos administradores puede haber, dado que solo se crea uno inicial y el rol no se puede cambiar desde la app? [Ambiguity, Spec §FR-006, §FR-008, Assumptions]
+- [x] CHK001 - ¿Están enumeradas todas las transiciones prohibidas, incluida En Progreso → Abierto, que hoy no tiene escenario de aceptación? [Coverage, Spec §FR-027, §US4-2, §US4-3]
+- [x] CHK002 - ¿Está definido qué respuesta recibe un pedido de transición al mismo estado (por ejemplo, Abierto → Abierto)? [Edge Case, Gap, Spec §FR-027]
+- [x] CHK003 - ¿Está especificado si el paso a En Progreso registra fecha, hora y administrador, como sí lo hace el cierre? [Gap, Spec §US4-1, §FR-029]
+- [x] CHK004 - ¿Está definido si se guarda un historial de cambios de estado o solo el estado actual y los datos de cierre? [Gap, Key Entities]
+- [x] CHK005 - ¿Está especificado si el paso a En Progreso exige algún dato (responsable, comentario) o es solo un cambio de estado? [Clarity, Spec §FR-027]
+- [x] CHK006 - ¿Está definido cuántos administradores puede haber, dado que solo se crea uno inicial y el rol no se puede cambiar desde la app? [Ambiguity, Spec §FR-006, §FR-008, Assumptions]
 
 ## Acciones correctivas y preventivas
 
-- [ ] CHK007 - ¿Está explícito que se pueden registrar acciones correctivas en un reporte Abierto (FR-028 solo excluye Cerrado), y es eso lo buscado? [Clarity, Spec §FR-028, §US4]
-- [ ] CHK008 - ¿Están definidos el carácter obligatorio y el largo máximo de la descripción de una acción correctiva? [Gap, Spec §FR-028]
-- [ ] CHK009 - ¿Está especificado si una acción correctiva se puede editar o eliminar una vez registrada? [Gap, Spec §FR-028]
-- [ ] CHK010 - ¿Está definido si "correctiva" y "preventiva" son tipos distintos que se registran por separado o un mismo concepto? [Ambiguity, Spec §FR-028, Key Entities]
-- [ ] CHK011 - ¿Está especificado el orden en que se muestran las acciones correctivas en el detalle? [Gap, Spec §FR-011, §FR-025]
+- [x] CHK007 - ¿Está explícito que se pueden registrar acciones correctivas en un reporte Abierto (FR-028 solo excluye Cerrado), y es eso lo buscado? [Clarity, Spec §FR-028, §US4]
+- [x] CHK008 - ¿Están definidos el carácter obligatorio y el largo máximo de la descripción de una acción correctiva? [Gap, Spec §FR-028]
+- [x] CHK009 - ¿Está especificado si una acción correctiva se puede editar o eliminar una vez registrada? [Gap, Spec §FR-028]
+- [x] CHK010 - ¿Está definido si "correctiva" y "preventiva" son tipos distintos que se registran por separado o un mismo concepto? [Ambiguity, Spec §FR-028, Key Entities]
+- [x] CHK011 - ¿Está especificado el orden en que se muestran las acciones correctivas en el detalle? [Gap, Spec §FR-011, §FR-025]
 
 ## Cierre
 
-- [ ] CHK012 - ¿Está definida la relación entre la "acción realizada" del cierre y las acciones correctivas registradas? ¿Se exige al menos una acción correctiva antes de cerrar? [Ambiguity, Spec §FR-028, §FR-029]
-- [ ] CHK013 - ¿Están definidos los largos máximos de la acción realizada y de la observación de cierre? [Gap, Spec §FR-029]
-- [ ] CHK014 - ¿Está especificado si un texto con solo espacios cuenta como vacío, tanto en el cierre como en descripción, ubicación y acciones? [Clarity, Spec §FR-029, §US4-6, §US1-5]
-- [ ] CHK015 - ¿Está definido en qué zona horaria se registran y se muestran las fechas y horas de creación, acciones y cierre? [Gap, Spec §FR-010, §FR-029]
-- [ ] CHK016 - ¿Puede medirse objetivamente SC-005 ("todo reporte Cerrado tiene registrado…"), con la lista exacta de datos que deben estar presentes? [Measurability, Spec §SC-005]
+- [x] CHK012 - ¿Está definida la relación entre la "acción realizada" del cierre y las acciones correctivas registradas? ¿Se exige al menos una acción correctiva antes de cerrar? [Ambiguity, Spec §FR-028, §FR-029]
+- [x] CHK013 - ¿Están definidos los largos máximos de la acción realizada y de la observación de cierre? [Gap, Spec §FR-029]
+- [x] CHK014 - ¿Está especificado si un texto con solo espacios cuenta como vacío, tanto en el cierre como en descripción, ubicación y acciones? [Clarity, Spec §FR-029, §US4-6, §US1-5]
+- [x] CHK015 - ¿Está definido en qué zona horaria se registran y se muestran las fechas y horas de creación, acciones y cierre? [Gap, Spec §FR-010, §FR-029]
+- [x] CHK016 - ¿Puede medirse objetivamente SC-005 ("todo reporte Cerrado tiene registrado…"), con la lista exacta de datos que deben estar presentes? [Measurability, Spec §SC-005]
 
 ## Edición y adjuntos según el estado
 
-- [ ] CHK017 - ¿Está definido qué pasa si el creador edita o adjunta una imagen en el mismo momento en que el administrador pasa el reporte a En Progreso? [Edge Case, Gap, Spec §FR-012, §FR-013]
-- [ ] CHK018 - ¿Está especificado qué pasa cuando dos administradores (o dos pedidos del mismo) cambian el estado o cierran el mismo reporte a la vez? [Edge Case, Gap, Spec §FR-027]
-- [ ] CHK019 - ¿Es consistente la respuesta ante una operación no permitida por el estado (editar, adjuntar, registrar acción en Cerrado, transición inválida), siempre como conflicto de estado? [Consistency, Spec §US4-5, §US5-5, Assumptions]
-- [ ] CHK020 - ¿Está definido si el administrador puede adjuntar imágenes o solo el creador, y en qué estados? [Gap, Spec §FR-013]
+- [x] CHK017 - ¿Está definido qué pasa si el creador edita o adjunta una imagen en el mismo momento en que el administrador pasa el reporte a En Progreso? [Edge Case, Gap, Spec §FR-012, §FR-013]
+- [x] CHK018 - ¿Está especificado qué pasa cuando dos administradores (o dos pedidos del mismo) cambian el estado o cierran el mismo reporte a la vez? [Edge Case, Gap, Spec §FR-027]
+- [x] CHK019 - ¿Es consistente la respuesta ante una operación no permitida por el estado (editar, adjuntar, registrar acción en Cerrado, transición inválida), siempre como conflicto de estado? [Consistency, Spec §US4-5, §US5-5, Assumptions]
+- [x] CHK020 - ¿Está definido si el administrador puede adjuntar imágenes o solo el creador, y en qué estados? [Gap, Spec §FR-013]
 
 ## Listado y panel del administrador
 
-- [ ] CHK021 - ¿Es "Abiertos" en FR-026 exactamente el estado Abierto, o incluye En Progreso, como sugiere "siguen abiertos" en SC-007 y en US3? [Ambiguity, Conflict, Spec §FR-026, §SC-007, §US3]
-- [ ] CHK022 - ¿Es consistente el título de US3 ("reportes priorizados") con FR-024, que ordena solo por fecha de creación sin considerar la criticidad? [Conflict, Spec §US3, §FR-024]
-- [ ] CHK023 - ¿Está especificado qué datos muestra cada fila del listado global además del estado (por ejemplo, criticidad, categoría, ubicación, creador)? [Completeness, Spec §FR-024]
-- [ ] CHK024 - ¿Se excluyen de forma explícita los filtros y la búsqueda en el listado global (por estado, criticidad, fecha) o quedan sin definir? [Gap, Spec §FR-024, Assumptions]
-- [ ] CHK025 - ¿Está definido el orden entre reportes con la misma fecha y hora de creación, para que la paginación sea estable? [Edge Case, Gap, Spec §FR-024]
-- [ ] CHK026 - ¿Está especificado qué datos acompañan a cada página (total de reportes o de páginas) para poder navegar el listado? [Gap, Spec §FR-024]
-- [ ] CHK027 - ¿Está definido si el listado de "mis reportes" del empleado está paginado y con qué orden, igual que el global? [Gap, Spec §FR-011]
+- [x] CHK021 - ¿Es "Abiertos" en FR-026 exactamente el estado Abierto, o incluye En Progreso, como sugiere "siguen abiertos" en SC-007 y en US3? [Ambiguity, Conflict, Spec §FR-026, §SC-007, §US3]
+- [x] CHK022 - ¿Es consistente el título de US3 ("reportes priorizados") con FR-024, que ordena solo por fecha de creación sin considerar la criticidad? [Conflict, Spec §US3, §FR-024]
+- [x] CHK023 - ¿Está especificado qué datos muestra cada fila del listado global además del estado (por ejemplo, criticidad, categoría, ubicación, creador)? [Completeness, Spec §FR-024]
+- [x] CHK024 - ¿Se excluyen de forma explícita los filtros y la búsqueda en el listado global (por estado, criticidad, fecha) o quedan sin definir? [Gap, Spec §FR-024, Assumptions]
+- [x] CHK025 - ¿Está definido el orden entre reportes con la misma fecha y hora de creación, para que la paginación sea estable? [Edge Case, Gap, Spec §FR-024]
+- [x] CHK026 - ¿Está especificado qué datos acompañan a cada página (total de reportes o de páginas) para poder navegar el listado? [Gap, Spec §FR-024]
+- [x] CHK027 - ¿Está definido si el listado de "mis reportes" del empleado está paginado y con qué orden, igual que el global? [Gap, Spec §FR-011]
 
 ## Estados vacíos y trazabilidad
 
-- [ ] CHK028 - ¿Están definidos los casos sin datos: listado sin reportes, panel con contadores en cero y reporte sin acciones correctivas? [Coverage, Gap]
-- [ ] CHK029 - ¿Tiene cada requisito de gestión (FR-024 a FR-030) al menos un escenario de aceptación con su ID de AC del PRD? [Traceability, Spec §US3, §US4]
-- [ ] CHK030 - ¿Son objetivamente verificables los contadores del panel (qué reportes entran en cada uno y en qué momento se actualizan)? [Measurability, Spec §FR-026, §US3-3]
+- [x] CHK028 - ¿Están definidos los casos sin datos: listado sin reportes, panel con contadores en cero y reporte sin acciones correctivas? [Coverage, Gap]
+- [x] CHK029 - ¿Tiene cada requisito de gestión (FR-024 a FR-030) al menos un escenario de aceptación con su ID de AC del PRD? [Traceability, Spec §US3, §US4]
+- [x] CHK030 - ¿Son objetivamente verificables los contadores del panel (qué reportes entran en cada uno y en qué momento se actualizan)? [Measurability, Spec §FR-026, §US3-3]
 
 ## Notes
 
@@ -67,3 +67,4 @@ trazables. Revisión estándar previa a `/speckit-plan`.
 - `checklists/requirements.md` has a separate built-in lifecycle maintained by `/speckit-specify` and `/speckit-clarify`
 - Generado solo a partir de `spec.md` y la constitución: todavía no existen `plan.md` ni `tasks.md`.
 - El cierre de reportes "Pendiente de clasificación" está cubierto en `ai-classification.md` (CHK016).
+- Evaluado el 2026-10-21 por el agente, a pedido del revisor, contra spec.md, plan.md, research.md, data-model.md y contracts/. Los ítems que quedaron abiertos en esa evaluación se cerraron después con decisiones del revisor, registradas en la sección Clarifications de spec.md, y con la enmienda del PRD.

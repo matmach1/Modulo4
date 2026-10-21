@@ -146,7 +146,8 @@ checklists que la spec deja para el plan. Cada decisión indica qué requisito o
   campo y p95 de latencia. **No** forma parte de `dotnet test` (la constitución prohíbe llamar a
   Claude API real en tests). Los casos que terminan en `Pendiente` cuentan como error
   (ai-classification CHK026). Se corre antes de cada release y cada vez que cambian el modelo, el
-  prompt o `kb.md` (CHK028).
+  prompt o `kb.md` (CHK028). No alcanzar los mínimos bloquea la salida a producción (SC-002);
+  hasta entonces solo se permite un piloto.
 - **Dependencia abierta**: el dataset todavía no existe (Seguridad e Higiene).
 
 ## R10. Base de conocimiento `kb.md`

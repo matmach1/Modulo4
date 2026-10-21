@@ -43,9 +43,9 @@ del servidor, frontend React 18 + Vite 5. La integración con Claude vive aislad
 | I. IA aislada y solo texto | Proyecto `Riesgos.Clasificacion` es el único que referencia el SDK; el resto usa `IClasificadorReportes` ([contracts/clasificador.md](contracts/clasificador.md)). `EntradaClasificacion` solo tiene descripción, ubicación y categoría sugerida. Una llamada con salida estructurada y `kb.md` en el system prompt. | ✅ |
 | II. Ningún reporte se pierde por la IA | El reporte se guarda antes de clasificar; falla, timeout de 10 s o valor inválido ⇒ queda `Pendiente`; nunca un error HTTP por la IA. Validaciones antes de encolar. El borrador se regenera también al pasar a pendiente. | ✅ |
 | III. Control de acceso en el backend | Políticas por rol + verificación de propiedad en el servicio; DTO de detalle armado según el rol; imágenes servidas solo por endpoint autenticado (FR-013a). Cada endpoint tiene test de acceso ([contracts/api.md](contracts/api.md)). Exactamente dos roles. | ✅ |
-| IV. Test-first con modelo simulado | Máquina de estados, procesador de clasificación y permisos se escriben test-first. `ClasificadorSimulado` + cola controlable en tests ([research.md](research.md) R1). Cada AC con al menos un test que lo referencia. Precisión medida aparte (R9). | ✅ |
+| IV. Test-first con modelo simulado | Máquina de estados, procesador de clasificación y permisos se escriben test-first. `ClasificadorSimulado` + cola controlable en tests ([research.md](research.md) R1). Cada AC con al menos un test que lo referencia. Precisión (AC-05) y latencia (AC-45) se miden aparte con la herramienta de evaluación (R9), porque requieren Claude API real y los tests no pueden llamarla; AC-46 se verifica con un script automatizado (T117). | ✅ |
 | V. Sin secretos en el código | `API_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` por entorno; BCrypt; `.env` en `.gitignore`; chequeo AC-46 en quickstart. | ✅ |
-| Alcance: nada fuera del PRD | Dos funcionalidades de la spec no tienen RF/AC en el PRD: **cerrar sesión** (FR-005a) y **orden por criticidad** del listado (FR-024). | ⚠️ Condicional (ver Complexity Tracking) |
+| Alcance: nada fuera del PRD | El PRD fue enmendado (commit propio) con RF-02e (orden por criticidad), RF-42 (cerrar sesión), RF-43 (acceso a imágenes), RNF-07 (HTTPS), RNF-08 (clasificación en segundo plano) y AC-70 a AC-75. | ✅ |
 | Flujo: trazabilidad RF/AC | Tabla endpoint → AC en [contracts/api.md](contracts/api.md). | ✅ |
 
 ### Chequeo contra `AGENTS.md`
@@ -67,9 +67,8 @@ La constitución define `AGENTS.md` como guía operativa y exige que se mantenga
 | Sin CRM, multi-canal real, RBAC configurable, multi-tenant ni envío real de mails | Nada de eso en el diseño; el borrador de mail solo se muestra | ✅ |
 | Variables de entorno documentadas | `API_KEY`, `ADMIN_EMAIL`, `ADMIN_PASSWORD` y `CLAUDE_MODEL` documentadas en `AGENTS.md` | ✅ |
 
-**Resultado del gate (pre y post diseño)**: pasa con una condición. El plan puede seguir a
-`/speckit-tasks`, pero las tareas de cerrar sesión y de orden por criticidad quedan bloqueadas
-hasta actualizar el PRD (enmienda documentada, como pide Governance).
+**Resultado del gate (pre y post diseño)**: pasa. Las tareas de cerrar sesión y de orden por
+criticidad, que dependían de enmendar el PRD, quedaron desbloqueadas con la enmienda (T006).
 
 Notas de revisión post-diseño:
 - La creación por el administrador (FR-009a) **sí** está cubierta por RF-01 ("cualquier usuario
@@ -146,8 +145,6 @@ referencias son `Api → Core, Clasificacion` y `Clasificacion → Core`.
 
 | Violación | Por qué hace falta | Alternativa más simple descartada porque |
 |-----------|--------------------|------------------------------------------|
-| Cerrar sesión (FR-005a) sin RF/AC en el PRD | Decidido en la clarificación: un equipo compartido de planta necesita cerrar sesión de verdad. | Dejar solo el vencimiento por 24 h deja sesiones abiertas en equipos compartidos. **Requiere enmendar el PRD antes de implementar.** |
-| Orden por criticidad del listado (FR-024) sin RF/AC en el PRD | Decidido en la clarificación; alinea con la persona del administrador del PRD ("verlos priorizados por criticidad"). | Solo orden por fecha contradice esa necesidad. **Requiere enmendar el PRD (RF-02d) antes de implementar.** |
 | Tres proyectos de backend en vez de uno | Hace que el aislamiento de la IA (Principio I) lo garantice el compilador. | Un solo proyecto con carpetas depende de disciplina en las revisiones. |
 
 ## Riesgos y dependencias abiertas

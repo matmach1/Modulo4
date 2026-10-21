@@ -22,6 +22,20 @@
 - Q: El listado global del administrador, ¿debe seguir ordenado solo por fecha (como pide el PRD) o tiene que priorizar por criticidad, como sugiere el título de US3? → A: Orden por fecha por defecto, con opción de ordenar por criticidad; requiere actualizar el PRD.
 - Q: ¿Quién puede ver o descargar las imágenes adjuntas de un reporte? → A: Las mismas reglas que el reporte: el creador y el administrador; otro empleado recibe acceso denegado y alguien sin sesión, no autenticado.
 - Q: Para cerrar un reporte, ¿alcanza con escribir la "acción realizada" y la observación de cierre, o además tiene que haber al menos una acción correctiva registrada? → A: Alcanza con la acción realizada y la observación; las acciones correctivas son opcionales y sirven para registrar pasos intermedios.
+- Q: Rechazar un registro por email duplicado revela qué emails tienen cuenta, ¿se acepta ese riesgo? → A: Sí; es una app interna con emails corporativos que no son secretos.
+- Q: Además del vencimiento por 24 h sin actividad, ¿la sesión debe tener una duración máxima absoluta? → A: No; solo vence por 24 h de inactividad, como dice el PRD.
+- Q: El aviso de que el contenido de los reportes se envía a un servicio externo de IA, ¿es un requisito de la app o queda fuera? → A: Queda fuera de la app: lo comunica la empresa por sus canales internos.
+- Q: ¿La app debe exigir HTTPS o eso queda a cargo de la infraestructura? → A: La app lo exige: redirige HTTP a HTTPS y envía HSTS (en desarrollo vale `localhost`).
+- Q: Un empleado podría redactar la descripción para manipular la criticidad que asigna la IA, ¿cómo se trata? → A: Se mitiga en las instrucciones del clasificador (la descripción es solo dato, nunca instrucciones) y se acepta el riesgo residual; el administrador ve todos los reportes.
+- Q: SC-004 habla del 100% de los escenarios de control de acceso del PRD sin enumerarlos, ¿se listan en la spec? → A: Sí; se enumeran los AC de acceso del PRD y los escenarios de imágenes y cierre de sesión.
+- Q: ¿Las listas cerradas de tipo, categoría y criticidad se agregan a FR-014? → A: Sí, indicando que no se amplían.
+- Q: Un reporte "Pendiente de clasificación", ¿puede pasar a En Progreso y Cerrado igual que uno clasificado? → A: Sí; la clasificación no condiciona los cambios de estado ni las acciones correctivas.
+- Q: Cuando el administrador cambia el estado o registra una acción correctiva, ¿se vuelve a clasificar? → A: No; solo se clasifica al crear y al editar.
+- Q: Si un reporte Crítico se edita y la reclasificación falla, deja de contar como Crítico en el panel, ¿se acepta? → A: Sí; queda pendiente y pasa al contador de pendientes, como pide el PRD (RF-37).
+- Q: Si la IA no alcanza los mínimos de precisión con el dataset de validación, ¿bloquea la salida a producción? → A: Sí; hasta tener el dataset y alcanzar los mínimos, solo se permite un piloto.
+- Q: ¿Cuántos administradores puede haber? → A: Uno solo, el creado por la configuración del entorno; reemplazarlo es un procedimiento operativo fuera de la app.
+- Q: ¿El listado global del administrador tiene filtros o búsqueda en v1? → A: No; quedan excluidos explícitamente del alcance.
+- Q: ¿Se agrega a la spec qué se muestra cuando no hay datos? → A: Sí; los listados vacíos muestran un mensaje, los contadores muestran 0 y el detalle indica que no hay acciones ni imágenes.
 
 ## User Scenarios & Testing *(mandatory)*
 
@@ -131,7 +145,8 @@ listado, contadores del panel y detalle con acción sugerida y borrador de mail.
 4. **Given** un reporte con criticidad Crítica, **When** el administrador lo visualiza, **Then** se muestra
    "Detener actividad"; con Alta, "Requiere intervención inmediata"; con Baja, Media o
    "Pendiente de clasificación", ninguna recomendación (AC-08, AC-09, AC-30).
-5. **Given** un reporte recién creado, **When** el administrador consulta su detalle, **Then** ve
+5. **Given** un reporte recién creado cuya clasificación ya terminó, **When** el administrador
+   consulta su detalle, **Then** ve
    un borrador de mail cuyo asunto contiene categoría y criticidad y cuyo cuerpo contiene
    descripción, ubicación, fecha de creación y usuario creador (AC-41).
 6. **Given** un empleado que consulta un reporte propio, **When** se muestra el detalle, **Then**
@@ -250,8 +265,14 @@ de inactividad y verificar que se pide autenticación de nuevo.
 
 - El servicio de clasificación devuelve un valor fuera de las listas válidas de tipo, categoría o
   criticidad: se trata como falla y el reporte queda "Pendiente de clasificación".
+- Una descripción redactada para manipular la clasificación (por ejemplo, con instrucciones al
+  modelo): el clasificador trata el texto del reporte solo como dato a clasificar; si aun así la
+  criticidad resulta incorrecta, se acepta el riesgo, porque el administrador ve todos los
+  reportes en el listado.
 - El servicio de clasificación falla al reclasificar tras una edición: la edición se guarda igual
-  y la clasificación pasa a "Pendiente de clasificación" (no conserva la anterior).
+  y la clasificación pasa a "Pendiente de clasificación" (no conserva la anterior). Si era
+  Crítico, deja de contar en el contador de Críticos y pasa al de pendientes; se acepta ese
+  comportamiento (RF-37).
 - Registros simultáneos con el mismo email: exactamente uno tiene éxito.
 - Un empleado intenta adjuntar más de una imagen en una sola operación: se rechaza la operación
   completa y no se asocia ningún archivo (cada operación admite exactamente una imagen).
@@ -285,11 +306,12 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - **FR-004**: El sistema MUST permitir cambiar la contraseña previa verificación de la actual,
   exigiendo al menos 8 caracteres en la nueva (RF-15, RF-40).
 - **FR-005**: El sistema MUST expirar la sesión tras 24 h de inactividad (RNF-06); cada uso
-  renueva el plazo.
+  renueva el plazo. No hay duración máxima absoluta: una sesión usada a diario no vence.
 - **FR-005a**: El usuario MUST poder cerrar sesión explícitamente; la sesión MUST quedar
-  invalidada en el servidor de inmediato.
+  invalidada en el servidor de inmediato (RF-42).
 - **FR-006**: El sistema MUST crear un administrador inicial con credenciales provistas por la
-  configuración del entorno (RF-30).
+  configuración del entorno (RF-30). En v1 existe un único administrador: la app no permite dar de
+  alta otros; reemplazarlo es un procedimiento operativo fuera de la app.
 - **FR-007**: El sistema MUST almacenar las contraseñas con un hash seguro, nunca en texto plano
   (RNF-05).
 - **FR-008**: El sistema MUST reconocer exactamente dos roles: empleado y administrador.
@@ -303,7 +325,9 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - **FR-011**: El empleado MUST poder listar únicamente sus propios reportes y ver el detalle solo
   de ellos (RF-03, RF-31). El detalle para el empleado MUST incluir tipo, categoría, criticidad,
   acciones correctivas, datos de cierre e imágenes, y MUST NOT incluir la acción preventiva
-  sugerida ni el borrador de mail.
+  sugerida ni el borrador de mail. La lista de reportes propios MUST estar paginada (mismos
+  límites que FR-024) y ordenada por fecha de creación descendente; el administrador también tiene
+  su lista de reportes propios.
 - **FR-009a**: El administrador MUST poder crear reportes con las mismas reglas que un empleado;
   sus reportes aparecen en el listado global como cualquier otro.
 - **FR-012**: El creador (empleado o administrador) MUST poder editar descripción y ubicación
@@ -313,14 +337,19 @@ de inactividad y verificar que se pide autenticación de nuevo.
   asociadas al reporte (RF-19, RF-20, RF-33).
 - **FR-013a**: Ver o descargar una imagen adjunta MUST estar permitido solo a quien puede ver el
   reporte (su creador y el administrador); el resto MUST recibir acceso denegado, o no
-  autenticado si no tiene sesión.
+  autenticado si no tiene sesión (RF-43).
 
 **Clasificación**
 
 - **FR-014**: El sistema MUST clasificar cada reporte en tipo, categoría y criticidad usando IA
   con la base de conocimiento de seguridad como contexto, en una única consulta (RF-04, RF-07,
   RF-25, RNF-01). La clasificación MUST ejecutarse en segundo plano: la creación MUST responder
-  sin esperarla, con el reporte en "Pendiente de clasificación" hasta que llegue el resultado.
+  sin esperarla, con el reporte en "Pendiente de clasificación" hasta que llegue el resultado
+  (RNF-08).
+  Los valores válidos son listas cerradas que MUST NOT ampliarse: tipo ∈ {Acto inseguro, Condición
+  insegura, Casi accidente, Riesgo operativo, Otro}; categoría ∈ {Problema de infraestructura,
+  Riesgo eléctrico, Uso de elementos de protección personal, Otro}; criticidad ∈ {Baja, Media,
+  Alta, Crítica}.
 - **FR-015**: La clasificación MUST basarse solo en la información de texto; las imágenes MUST
   NOT enviarse al servicio de clasificación (RF-21).
 - **FR-016**: Cuando la categoría sugerida difiera de la automática, el sistema MUST conservar la
@@ -328,7 +357,8 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - **FR-017**: El sistema MUST reclasificar el reporte en segundo plano cada vez que su creador lo
   edita (RF-32); la edición MUST responder sin esperar la reclasificación, con el reporte en
   "Pendiente de clasificación", y el resultado de una clasificación de una versión anterior MUST
-  descartarse.
+  descartarse. Solo crear y editar disparan una clasificación; cambiar el estado o registrar
+  acciones correctivas MUST NOT hacerlo.
 - **FR-018**: Si la clasificación falla, no responde en 10 s o devuelve valores inválidos, el
   reporte (o la edición) MUST quedar guardado con tipo, categoría y criticidad "Pendiente de
   clasificación" (RF-35, RF-37).
@@ -354,17 +384,19 @@ de inactividad y verificar que se pide autenticación de nuevo.
   inválido), con su estado y criticidad. El orden por defecto MUST ser por fecha de creación
   descendente (RF-02a–RF-02d); el administrador MUST poder pedir, en cambio, orden por criticidad
   (Crítica, Alta, Media, Baja, "Pendiente de clasificación"), con fecha de creación descendente
-  dentro de cada nivel.
+  dentro de cada nivel (RF-02e).
 - **FR-025**: El administrador MUST poder ver el detalle de cualquier reporte, incluidas ambas
   categorías cuando difieran (RF-28, RF-31).
 - **FR-026**: El panel del administrador MUST mostrar la cantidad de reportes en estado Abierto
   con criticidad Crítica y la de reportes en estado Abierto "Pendiente de clasificación" (RF-24,
   RF-38). Los reportes En Progreso o Cerrados MUST NOT contarse.
 - **FR-027**: El administrador MUST poder cambiar el estado solo según Abierto → En Progreso →
-  Cerrado; cualquier otra transición MUST rechazarse (RF-16).
+  Cerrado; cualquier otra transición MUST rechazarse (RF-16). La clasificación (incluido
+  "Pendiente de clasificación") MUST NOT condicionar los cambios de estado ni el registro de
+  acciones correctivas.
 - **FR-028**: El administrador MUST poder registrar acciones correctivas o preventivas con
   descripción, asignando automáticamente fecha y responsable, excepto en reportes Cerrados (RF-22,
-  RF-34).
+  RF-34). "Correctiva o preventiva" es un único concepto: no se distinguen tipos.
 - **FR-029**: Al cerrar, el sistema MUST exigir acción realizada y observación de cierre, y
   registrar fecha, hora y usuario de cierre (RF-18, RF-23). El cierre MUST NOT exigir acciones
   correctivas registradas; estas son opcionales y registran pasos intermedios.
@@ -376,6 +408,14 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - **FR-031**: Ningún secreto (clave del servicio de clasificación, credenciales del administrador)
   MUST estar en el código o en archivos versionados; se toman de la configuración del entorno
   (RNF-04, AC-46).
+- **FR-032**: Toda comunicación con la aplicación MUST ser por HTTPS: el sistema MUST redirigir
+  HTTP a HTTPS y enviar la cabecera HSTS, salvo en el entorno de desarrollo local (RNF-07).
+
+**Interfaz**
+
+- **FR-033**: Cuando no hay datos, la interfaz MUST mostrar un estado vacío explícito: todo
+  listado sin reportes muestra un mensaje en lugar de una tabla vacía, los contadores del panel
+  muestran 0 (no se ocultan) y el detalle indica "Sin acciones registradas" y "Sin imágenes".
 
 ### Key Entities
 
@@ -402,11 +442,15 @@ de inactividad y verificar que se pide autenticación de nuevo.
   automática falla o no responde.
 - **SC-002**: La clasificación automática acierta al menos el 90% de las categorías, el 90% de los
   tipos y el 85% de las criticidades sobre el dataset de validación de Seguridad e Higiene.
-- **SC-003**: En el 95% de los casos, la clasificación de un reporte queda guardada en menos de
-  3 segundos desde su creación o edición (AC-45); la respuesta de creación o edición no depende de
-  ese tiempo.
+  Alcanzar los tres mínimos es condición para salir a producción; mientras no exista el dataset o
+  no se alcancen, el sistema solo puede usarse en un piloto.
+- **SC-003**: En el 95% de los casos, la llamada al servicio de clasificación responde en menos de
+  3 segundos, medido sobre el dataset de validación (RNF-01, AC-45). La respuesta de creación o
+  edición no depende de ese tiempo, y entre 3 y 10 s el reporte igual queda clasificado.
 - **SC-004**: Ningún empleado puede ver, editar ni gestionar reportes de otro usuario, ni acceder a
-  funciones de administrador: el 100% de los escenarios de control de acceso del PRD se cumple.
+  funciones de administrador: se cumple el 100% de estos escenarios de control de acceso: AC-03,
+  AC-04, AC-12, AC-16, AC-36, AC-37, AC-38, AC-39, AC-42 y AC-48 (US1, US3, US4, US5, US6), el
+  acceso a imágenes (US5-9, FR-013a) y el cierre de sesión (US6-5, FR-005a).
 - **SC-005**: Todo reporte Cerrado tiene registrado quién lo creó, qué acción se realizó, quién lo
   cerró y cuándo.
 - **SC-006**: Un empleado puede crear un reporte completando solo dos campos obligatorios
@@ -426,7 +470,12 @@ de inactividad y verificar que se pide autenticación de nuevo.
 - Fuera de alcance según el PRD: CRM, multi-canal real, envío real de mails, más de dos roles,
   cambio de rol desde la app, multi-tenant, corrección manual de clasificación, reapertura o
   eliminación de reportes, recuperación de contraseña, reintento de clasificación, exportes y
-  estadísticas más allá de los contadores del panel, notificaciones al empleado.
-- Se informa a los usuarios que el contenido de los reportes se envía a un servicio externo de IA.
-- El orden por criticidad del listado global (FR-024) no está en el PRD vigente; según la
-  constitución, el PRD debe actualizarse antes de implementarlo.
+  estadísticas más allá de los contadores del panel, notificaciones al empleado. Tampoco hay
+  filtros ni búsqueda (por estado, criticidad, fecha o texto) en ningún listado en v1.
+- La empresa informa a los usuarios, por sus canales internos y fuera de la app, que el contenido
+  de los reportes se envía a un servicio externo de IA; la app no muestra ese aviso.
+- Se acepta que el rechazo de un registro por email duplicado (AC-31) revele qué emails tienen
+  cuenta: es una aplicación interna con emails corporativos que no son secretos.
+- El PRD fue enmendado (RF-02e, RF-42, RF-43, RNF-07, RNF-08 y AC-70 a AC-75) para incluir las
+  funcionalidades que surgieron de la clarificación: orden por criticidad, cierre de sesión,
+  acceso a imágenes, HTTPS y clasificación en segundo plano.
