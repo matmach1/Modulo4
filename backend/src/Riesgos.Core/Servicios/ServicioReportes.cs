@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Riesgos.Core.Clasificacion;
 using Riesgos.Core.Dominio;
+using Riesgos.Core.Notificacion;
 using Riesgos.Core.Persistencia;
 using Riesgos.Core.Validacion;
 
@@ -21,8 +22,24 @@ public sealed class ServicioReportes(RiesgosDbContext db, IColaClasificacion col
         };
         reporte.ReiniciarClasificacion();
 
-        db.Reportes.Add(reporte);
-        await db.SaveChangesAsync(ct);
+        // Reporte y evento de notificación en la misma transacción (FR-021, AC-07). El asunto del
+        // borrador lleva el número del reporte, así que primero se guarda el reporte.
+        await using (var transaccion = await db.Database.BeginTransactionAsync(ct))
+        {
+            db.Reportes.Add(reporte);
+            await db.SaveChangesAsync(ct);
+            var borrador = GeneradorBorrador.Generar(reporte, usuario.Email);
+            db.EventosNotificacion.Add(new EventoNotificacion
+            {
+                ReporteId = reporte.Id,
+                FechaCreacion = reporte.FechaCreacion,
+                FechaActualizacion = reporte.FechaCreacion,
+                AsuntoBorrador = borrador.Asunto,
+                CuerpoBorrador = borrador.Cuerpo,
+            });
+            await db.SaveChangesAsync(ct);
+            await transaccion.CommitAsync(ct);
+        }
 
         // Se clasifica en segundo plano: la respuesta no espera a la IA (FR-014).
         cola.Encolar(new TrabajoClasificacion(reporte.Id, reporte.VersionClasificacion));
