@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { api, mensajeDeError } from '../api/cliente';
+import DetalleAdmin from '../components/DetalleAdmin';
 import { EtiquetaCriticidad } from '../components/TablaReportes';
 import usePollingClasificacion, { estaPendiente } from '../hooks/usePollingClasificacion';
 import { CATEGORIAS, ESTADOS, TIPOS, fechaHora, texto } from '../textos';
@@ -33,6 +34,7 @@ export default function DetalleReporte() {
   return (
     <main>
       <h1>Reporte #{reporte.id}</h1>
+      <DetalleAdmin reporte={reporte} />
       <section className="tarjeta">
         <dl className="datos">
           <dt>Estado</dt>
@@ -57,7 +59,10 @@ export default function DetalleReporte() {
           <dd><EtiquetaCriticidad valor={reporte.criticidad} /></dd>
           {reporte.categoriaSugerida && (
             <>
-              <dt>Categoría sugerida</dt>
+              <dt>
+                Categoría sugerida
+                {reporte.categoriaSugerida !== reporte.categoria && reporte.categoria !== 'Pendiente' && ' (difiere de la automática)'}
+              </dt>
               <dd>{texto(CATEGORIAS, reporte.categoriaSugerida)}</dd>
             </>
           )}
