@@ -10,15 +10,31 @@ public sealed record Panel(int CriticosAbiertos, int PendientesAbiertos);
 // Operaciones exclusivas del administrador (FR-030); la API las protege con la política de rol.
 public sealed class ServicioAdministracion(RiesgosDbContext db, TimeProvider tiempo)
 {
-    public async Task<Pagina<Reporte>> ListarAsync(int? page, int? size, CancellationToken ct = default)
+    // Orden por defecto: fecha descendente (RF-02d). Opcional: por criticidad (RF-02e, FR-024),
+    // con fecha descendente dentro de cada nivel. El Id desempata para que la paginación sea estable.
+    public async Task<Pagina<Reporte>> ListarAsync(int? page, int? size, string? orden = null, CancellationToken ct = default)
     {
         var (p, s) = Paginacion.Validar(page, size);
+        var porCriticidad = (orden ?? "fecha").ToLowerInvariant() switch
+        {
+            "fecha" => false,
+            "criticidad" => true,
+            _ => throw new ErrorValidacion("orden", "El orden debe ser 'fecha' o 'criticidad'."),
+        };
+
         var total = await db.Reportes.CountAsync(ct);
-        var items = await db.Reportes.AsNoTracking()
-            .Include(r => r.Creador)
-            .OrderByDescending(r => r.FechaCreacion).ThenByDescending(r => r.Id)
-            .Skip((p - 1) * s).Take(s)
-            .ToListAsync(ct);
+        IQueryable<Reporte> consulta = db.Reportes.AsNoTracking().Include(r => r.Creador);
+        consulta = porCriticidad
+            ? consulta
+                .OrderBy(r => r.Criticidad == Criticidad.Critica ? 0
+                    : r.Criticidad == Criticidad.Alta ? 1
+                    : r.Criticidad == Criticidad.Media ? 2
+                    : r.Criticidad == Criticidad.Baja ? 3
+                    : 4)
+                .ThenByDescending(r => r.FechaCreacion).ThenByDescending(r => r.Id)
+            : consulta.OrderByDescending(r => r.FechaCreacion).ThenByDescending(r => r.Id);
+
+        var items = await consulta.Skip((p - 1) * s).Take(s).ToListAsync(ct);
         return new Pagina<Reporte>(items, p, s, total);
     }
 

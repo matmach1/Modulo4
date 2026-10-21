@@ -12,8 +12,8 @@ public static class AdminEndpoints
     {
         var grupo = app.MapGroup("/api/admin").RequireAuthorization(Politicas.Administrador);
 
-        grupo.MapGet("/reportes", async (int? page, int? size, ServicioAdministracion admin, CancellationToken ct) =>
-            Results.Ok(ReporteDetalleMapper.Pagina(await admin.ListarAsync(page, size, ct))));
+        grupo.MapGet("/reportes", async (int? page, int? size, string? orden, ServicioAdministracion admin, CancellationToken ct) =>
+            Results.Ok(ReporteDetalleMapper.Pagina(await admin.ListarAsync(page, size, orden, ct))));
 
         grupo.MapGet("/panel", async (ServicioAdministracion admin, CancellationToken ct) =>
             Results.Ok(await admin.PanelAsync(ct)));
