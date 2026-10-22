@@ -271,7 +271,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T107 [P] [US6] Test en `backend/tests/Riesgos.Api.Tests/US6/LogoutTests.cs`: AC-72, tras `POST /api/auth/logout` (204), repetir un request con la misma cookie ⇒ 401; sin sesión ⇒ 401
 - [X] T108 [US6] Implementar `POST /api/auth/logout` (borra la sesión y expira la cookie) en `backend/src/Riesgos.Api/Endpoints/AuthEndpoints.cs`
 - [X] T109 [US6] Agregar el botón "Cerrar sesión" al layout y `logout` al contexto en `frontend/src/App.jsx` y `frontend/src/auth/AuthContext.jsx`
-- [ ] T110 [P] [US6] Test de frontend del cierre de sesión en `frontend/src/__tests__/US6.test.jsx`
+- [X] T110 [P] [US6] Test de frontend del cierre de sesión en `frontend/src/__tests__/US6.test.jsx`
 
 **Checkpoint**: todas las user stories funcionan de forma independiente.
 

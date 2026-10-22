@@ -31,3 +31,27 @@ describe('Cambiar contraseña', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent('La contraseña actual no es correcta.');
   });
 });
+
+describe('Cerrar sesión (FR-005a)', () => {
+  const misReportes = ['GET', /\/api\/reportes\/mios/, () => respuestaJson(200, { items: [], page: 1, size: 20, total: 0 })];
+
+  it('llama al logout del servidor y vuelve al login', async () => {
+    const fetch = simularApi([sesionDe(EMPLEADO), misReportes, ['POST', '/api/auth/logout', () => new Response(null, { status: 204 })]]);
+    renderApp('/mis-reportes');
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cerrar sesión' }));
+
+    expect(await screen.findByRole('heading', { name: 'Iniciar sesión' })).toBeInTheDocument();
+    expect(fetch.mock.calls.some(([url, o]) => url === '/api/auth/logout' && o.method === 'POST')).toBe(true);
+    expect(screen.queryByText(EMPLEADO.email)).not.toBeInTheDocument();
+  });
+
+  it('si la sesión ya había vencido, igual vuelve al login', async () => {
+    simularApi([sesionDe(EMPLEADO), misReportes, ['POST', '/api/auth/logout', () => respuestaJson(401, { title: 'No autenticado' })]]);
+    renderApp('/mis-reportes');
+
+    await userEvent.click(await screen.findByRole('button', { name: 'Cerrar sesión' }));
+
+    expect(await screen.findByRole('heading', { name: 'Iniciar sesión' })).toBeInTheDocument();
+  });
+});
