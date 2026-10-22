@@ -30,6 +30,14 @@ public static class AuthEndpoints
             return Results.Ok(new UsuarioResponse(usuario.Id, usuario.Email, usuario.Rol));
         });
 
+        // Invalida la sesión en el servidor de inmediato (FR-005a, RF-42) y expira la cookie.
+        grupo.MapPost("/logout", async (ServicioSesiones sesiones, HttpContext http, CancellationToken ct) =>
+        {
+            await sesiones.CerrarAsync(http.User.TokenSesion(), ct);
+            http.Response.Cookies.Delete(SesionAuthenticationHandler.Cookie, OpcionesCookie());
+            return Results.NoContent();
+        }).RequireAuthorization();
+
         grupo.MapGet("/yo", (HttpContext http) =>
         {
             var usuario = http.User.UsuarioActual();
