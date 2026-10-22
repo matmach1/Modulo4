@@ -261,7 +261,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Implementation for User Story 6
 
-- [ ] T103 [US6] Implementar `ServicioCuentas.CambiarPasswordAsync` (verifica la actual, valida la nueva, hashea, borra las demás sesiones) en `backend/src/Riesgos.Core/Servicios/ServicioCuentas.cs`
+- [X] T103 [US6] Implementar `ServicioCuentas.CambiarPasswordAsync` (verifica la actual, valida la nueva, hashea, borra las demás sesiones) en `backend/src/Riesgos.Core/Servicios/ServicioCuentas.cs`
 - [ ] T104 [US6] Implementar `PUT /api/auth/password` en `backend/src/Riesgos.Api/Endpoints/AuthEndpoints.cs` (hace pasar T100–T102)
 - [ ] T105 [P] [US6] Crear la página "Cambiar contraseña" en `frontend/src/pages/CambiarPassword.jsx`
 - [ ] T106 [P] [US6] Test de frontend del cambio de contraseña en `frontend/src/__tests__/US6.test.jsx`

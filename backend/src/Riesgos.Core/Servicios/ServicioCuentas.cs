@@ -7,7 +7,7 @@ using Riesgos.Core.Validacion;
 
 namespace Riesgos.Core.Servicios;
 
-public sealed partial class ServicioCuentas(RiesgosDbContext db, HashContrasena hash, TimeProvider tiempo)
+public sealed partial class ServicioCuentas(RiesgosDbContext db, HashContrasena hash, TimeProvider tiempo, ServicioSesiones sesiones)
 {
     // Restricción UNIQUE violada en SQLite (código de error extendido 2067).
     private const int SqliteUniqueViolado = 2067;
@@ -60,6 +60,22 @@ public sealed partial class ServicioCuentas(RiesgosDbContext db, HashContrasena 
         }
 
         return usuario;
+    }
+
+    // Verifica la actual (FR-004). Si cambia, cierra las demás sesiones del usuario y mantiene la
+    // actual (research R4).
+    public async Task CambiarPasswordAsync(UsuarioActual usuario, string tokenSesionActual, string? actual, string? nueva, CancellationToken ct = default)
+    {
+        var cuenta = await db.Usuarios.SingleAsync(u => u.Id == usuario.Id, ct);
+        if (!hash.Verificar(actual ?? string.Empty, cuenta.PasswordHash))
+        {
+            throw new ErrorValidacion("passwordActual", "La contraseña actual no es correcta.");
+        }
+
+        HashContrasena.ValidarNueva(nueva, "passwordNueva");
+        cuenta.PasswordHash = hash.Hash(nueva!);
+        await db.SaveChangesAsync(ct);
+        await sesiones.CerrarOtrasAsync(usuario.Id, tokenSesionActual, ct);
     }
 
     [GeneratedRegex(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
