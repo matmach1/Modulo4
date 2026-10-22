@@ -13,7 +13,18 @@ public sealed class HashContrasena(int factorTrabajo = 12)
 
     public string Hash(string password) => BCrypt.Net.BCrypt.HashPassword(password, factorTrabajo);
 
-    public bool Verificar(string password, string hash) => BCrypt.Net.BCrypt.Verify(password, hash);
+    // Un hash con formato inválido (por ejemplo, una cuenta deshabilitada) nunca valida.
+    public bool Verificar(string password, string hash)
+    {
+        try
+        {
+            return BCrypt.Net.BCrypt.Verify(password, hash);
+        }
+        catch (Exception e) when (e is BCrypt.Net.SaltParseException or ArgumentException)
+        {
+            return false;
+        }
+    }
 
     public static void ValidarNueva(string? password, string campo = "password")
     {
