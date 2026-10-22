@@ -23,6 +23,9 @@ builder.Services.AddScoped<ServicioSesiones>();
 builder.Services.AddScoped<ServicioCuentas>();
 builder.Services.AddScoped<ServicioReportes>();
 builder.Services.AddScoped<ServicioAdministracion>();
+builder.Services.AddScoped<ServicioImagenes>();
+builder.Services.AddSingleton(sp => new ConfiguracionImagenes(
+    sp.GetRequiredService<IConfiguration>()["Imagenes:Ruta"] ?? Path.Combine("data", "imagenes")));
 
 builder.Services.AddSingleton<ColaClasificacion>();
 builder.Services.AddSingleton<IColaClasificacion>(sp => sp.GetRequiredService<ColaClasificacion>());
@@ -56,6 +59,7 @@ app.UseAuthorization();
 app.MapAuthEndpoints();
 app.MapReportesEndpoints();
 app.MapAdminEndpoints();
+app.MapImagenesEndpoints();
 
 app.Run();
 

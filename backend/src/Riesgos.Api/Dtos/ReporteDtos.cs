@@ -27,6 +27,8 @@ public sealed record CierreResponse(DateTimeOffset Fecha, string UsuarioEmail, s
 
 public sealed record BorradorMailResponse(string Asunto, string Cuerpo);
 
+public sealed record ImagenResponse(int Id, string TipoContenido, int TamanoBytes, DateTimeOffset FechaCarga, string Url);
+
 public sealed record AccionResponse(int Id, string Descripcion, DateTimeOffset Fecha, string ResponsableEmail);
 
 public sealed record CambiarEstadoRequest(EstadoReporte? Estado, string? AccionRealizada, string? ObservacionCierre);
@@ -62,6 +64,8 @@ public record ReporteDetalle
     public CierreResponse? Cierre { get; init; }
 
     public IReadOnlyList<AccionResponse> Acciones { get; init; } = [];
+
+    public IReadOnlyList<ImagenResponse> Imagenes { get; init; } = [];
 }
 
 public sealed record ReporteDetalleAdmin : ReporteDetalle

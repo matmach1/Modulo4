@@ -59,7 +59,12 @@ public static class ReporteDetalleMapper
                 .OrderBy(a => a.Fecha).ThenBy(a => a.Id)
                 .Select(Accion)
                 .ToList(),
+            Imagenes = r.Imagenes.OrderBy(i => i.Id).Select(Imagen).ToList(),
         };
+
+    public static string UrlImagen(ImagenAdjunta i) => $"/api/reportes/{i.ReporteId}/imagenes/{i.Id}";
+
+    public static ImagenResponse Imagen(ImagenAdjunta i) => new(i.Id, i.TipoContenido, i.TamanoBytes, i.FechaCarga, UrlImagen(i));
 
     public static AccionResponse Accion(AccionCorrectiva a) => new(a.Id, a.Descripcion, a.Fecha, a.Responsable.Email);
 }
