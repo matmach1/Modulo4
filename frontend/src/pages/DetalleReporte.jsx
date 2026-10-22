@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 import { api, mensajeDeError } from '../api/cliente';
 import { useAuth } from '../auth/AuthContext';
 import DetalleAdmin from '../components/DetalleAdmin';
+import EditarReporte from '../components/EditarReporte';
 import GestionReporte from '../components/GestionReporte';
+import Imagenes from '../components/Imagenes';
 import { EtiquetaCriticidad } from '../components/TablaReportes';
 import usePollingClasificacion, { estaPendiente } from '../hooks/usePollingClasificacion';
 import { CATEGORIAS, ESTADOS, TIPOS, fechaHora, texto } from '../textos';
@@ -34,6 +36,8 @@ export default function DetalleReporte() {
   if (error) return <main><p role="alert" className="error">{error}</p></main>;
   if (!reporte) return <main><p>Cargando…</p></main>;
 
+  const editable = reporte.estado === 'Abierto' && usuario?.email === reporte.creadorEmail;
+
   return (
     <main>
       <h1>Reporte #{reporte.id}</h1>
@@ -49,6 +53,7 @@ export default function DetalleReporte() {
           <dt>Creado</dt>
           <dd>{fechaHora(reporte.fechaCreacion)} por {reporte.creadorEmail}</dd>
         </dl>
+        {editable && <EditarReporte key={reporte.descripcion + reporte.ubicacion} reporte={reporte} onGuardado={cargar} />}
       </section>
 
       <section className="tarjeta">
@@ -74,6 +79,8 @@ export default function DetalleReporte() {
           <p className="vacio">La clasificación se completa en unos segundos. Si no aparece, queda pendiente.</p>
         )}
       </section>
+
+      <Imagenes reporte={reporte} puedeAdjuntar={editable} onSubida={cargar} />
 
       <GestionReporte reporte={reporte} esAdmin={usuario?.rol === 'Administrador'} onCambio={cargar} />
     </main>

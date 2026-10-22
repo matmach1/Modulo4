@@ -16,6 +16,7 @@ const base = {
   inicioProgreso: null,
   cierre: null,
   acciones: [],
+  imagenes: [],
 };
 
 function detalleSecuencial(...versiones) {
