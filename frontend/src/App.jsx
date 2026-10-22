@@ -1,4 +1,4 @@
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
+import { NavLink, Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import { useAuth } from './auth/AuthContext';
 import RutaProtegida from './auth/RutaProtegida';
 import CambiarPassword from './pages/CambiarPassword';
@@ -18,8 +18,15 @@ function Inicio() {
 }
 
 function Menu() {
-  const { usuario } = useAuth();
+  const { usuario, logout } = useAuth();
+  const navegar = useNavigate();
   if (!usuario) return null;
+
+  async function salir() {
+    await logout();
+    navegar('/login');
+  }
+
   return (
     <nav aria-label="Principal">
       {usuario.rol === 'Administrador' && (
@@ -32,6 +39,7 @@ function Menu() {
       <NavLink to="/reportes/nuevo">Nuevo reporte</NavLink>
       <NavLink to="/cuenta/password">Cambiar contraseña</NavLink>
       <span className="usuario">{usuario.email}</span>
+      <button type="button" className="secundario" onClick={salir}>Cerrar sesión</button>
     </nav>
   );
 }

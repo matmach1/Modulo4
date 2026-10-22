@@ -21,7 +21,16 @@ export function AuthProvider({ children }) {
     return datos;
   }, []);
 
-  const valor = useMemo(() => ({ usuario, cargando, login, setUsuario }), [usuario, cargando, login]);
+  const logout = useCallback(async () => {
+    try {
+      await api('/api/auth/logout', { metodo: 'POST' });
+    } catch {
+      // Si la sesión ya había vencido o falla la red, igual se da por cerrada en el navegador.
+    }
+    setUsuario(null);
+  }, []);
+
+  const valor = useMemo(() => ({ usuario, cargando, login, logout, setUsuario }), [usuario, cargando, login, logout]);
 
   return <AuthContext.Provider value={valor}>{children}</AuthContext.Provider>;
 }
