@@ -255,7 +255,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 ### Tests for User Story 6 ⚠️ (escribir primero, deben fallar)
 
-- [ ] T100 [P] [US6] Tests de cambio de contraseña en `backend/tests/Riesgos.Api.Tests/US6/PasswordTests.cs`: AC-14 (solo la nueva permite login), AC-32 (actual incorrecta ⇒ 400 y sigue la anterior), AC-66 (nueva < 8 ⇒ 400 y sigue la anterior), las demás sesiones del usuario quedan invalidadas y la actual sigue válida (R4)
+- [X] T100 [P] [US6] Tests de cambio de contraseña en `backend/tests/Riesgos.Api.Tests/US6/PasswordTests.cs`: AC-14 (solo la nueva permite login), AC-32 (actual incorrecta ⇒ 400 y sigue la anterior), AC-66 (nueva < 8 ⇒ 400 y sigue la anterior), las demás sesiones del usuario quedan invalidadas y la actual sigue válida (R4)
 - [ ] T101 [P] [US6] Tests de vencimiento en `backend/tests/Riesgos.Api.Tests/US6/VencimientoSesionTests.cs`: AC-48 (con `FakeTimeProvider`, > 24 h sin actividad ⇒ 401), actividad a las 23 h renueva el plazo (FR-005)
 - [ ] T102 [P] [US6] Test de hash en `backend/tests/Riesgos.Api.Tests/US6/HashTests.cs`: AC-47 (el valor guardado es distinto de la contraseña y tiene formato BCrypt `$2`)
 
