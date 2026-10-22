@@ -281,7 +281,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 
 **Purpose**: medición contra el modelo real, seguridad, documentación y validación final.
 
-- [ ] T111 [P] Implementar `Riesgos.Evaluacion`: lee `datasets/validacion-v{N}.csv` (columnas descripcion, ubicacion, tipo, categoria, criticidad), clasifica cada caso con `ClasificadorClaude`, reporta aciertos por campo (los `Pendiente` cuentan como error) y p95 de latencia, en `backend/tools/Riesgos.Evaluacion/Program.cs` (SC-002, SC-003, AC-05, AC-45; fuera de `dotnet test`)
+- [X] T111 [P] Implementar `Riesgos.Evaluacion`: lee `datasets/validacion-v{N}.csv` (columnas descripcion, ubicacion, tipo, categoria, criticidad), clasifica cada caso con `ClasificadorClaude`, reporta aciertos por campo (los `Pendiente` cuentan como error) y p95 de latencia, en `backend/tools/Riesgos.Evaluacion/Program.cs` (SC-002, SC-003, AC-05, AC-45; fuera de `dotnet test`)
 - [ ] T112 [P] Crear `datasets/README.md` con el formato esperado del dataset, la regla de versionado y que debe correrse T111 al cambiar modelo, prompt o `kb.md`
 - [ ] T113 [P] Revisar los logs: que la clasificación, los logins fallidos y los accesos denegados se registren sin texto de reportes, contraseñas, tokens ni API key (R13), en `backend/src/Riesgos.Api/` y `backend/src/Riesgos.Core/`
 - [ ] T114 [P] Verificar que cada AC del PRD (AC-01…AC-75, salvo AC-05/AC-45, que valida T111, y AC-46, que valida T117) tiene al menos un test con su `Trait`; agregar los que falten en `backend/tests/`
