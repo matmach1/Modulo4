@@ -36,6 +36,12 @@ public static class AuthEndpoints
             return Results.Ok(new UsuarioResponse(usuario.Id, usuario.Email, usuario.Rol));
         }).RequireAuthorization();
 
+        grupo.MapPut("/password", async (CambiarPasswordRequest request, ServicioCuentas cuentas, HttpContext http, CancellationToken ct) =>
+        {
+            await cuentas.CambiarPasswordAsync(http.User.UsuarioActual(), http.User.TokenSesion(), request.PasswordActual, request.PasswordNueva, ct);
+            return Results.NoContent();
+        }).RequireAuthorization();
+
         return grupo;
     }
 
