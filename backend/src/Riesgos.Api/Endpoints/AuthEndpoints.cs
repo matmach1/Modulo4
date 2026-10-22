@@ -16,11 +16,13 @@ public static class AuthEndpoints
             return Results.Created($"/api/auth/yo", new UsuarioResponse(usuario.Id, usuario.Email, usuario.Rol));
         });
 
-        grupo.MapPost("/login", async (LoginRequest request, ServicioCuentas cuentas, ServicioSesiones sesiones, HttpContext http, CancellationToken ct) =>
+        grupo.MapPost("/login", async (LoginRequest request, ServicioCuentas cuentas, ServicioSesiones sesiones, HttpContext http, ILoggerFactory logs, CancellationToken ct) =>
         {
             var usuario = await cuentas.AutenticarAsync(request.Email, request.Password, ct);
             if (usuario is null)
             {
+                // Evento de seguridad sin email ni contraseña (research R13).
+                logs.CreateLogger("Riesgos.Seguridad").LogWarning("Inicio de sesión fallido desde {Ip}", http.Connection.RemoteIpAddress);
                 // Mismo mensaje para email inexistente y contraseña incorrecta (research R4).
                 return Results.Problem(statusCode: StatusCodes.Status401Unauthorized, title: "Email o contraseña incorrectos.");
             }
