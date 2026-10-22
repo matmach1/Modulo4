@@ -287,7 +287,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T114 [P] Verificar que cada AC del PRD (AC-01…AC-75, salvo AC-05/AC-45, que valida T111, y AC-46, que valida T117) tiene al menos un test con su `Trait`; agregar los que falten en `backend/tests/`
 - [X] T115 [P] Actualizar `AGENTS.md` con cómo correr la herramienta de evaluación y el procedimiento operativo para reemplazar al único administrador (FR-006) (las variables de entorno ya están documentadas)
 - [ ] T116 Ejecutar la validación completa de [quickstart.md](quickstart.md): `dotnet test`, `npm test`, recorrido manual y `scripts/verificar-secretos.sh` (AC-46)
-- [ ] T117 [P] Crear `scripts/verificar-secretos.sh` (AC-46): falla si algún archivo versionado contiene el valor de `API_KEY` o `ADMIN_PASSWORD` (cuando están definidas), un archivo `.env` versionado o un patrón de clave de Anthropic (`sk-ant-`); documentar su uso en [quickstart.md](quickstart.md)
+- [X] T117 [P] Crear `scripts/verificar-secretos.sh` (AC-46): falla si algún archivo versionado contiene el valor de `API_KEY` o `ADMIN_PASSWORD` (cuando están definidas), un archivo `.env` versionado o un patrón de clave de Anthropic (`sk-ant-`); documentar su uso en [quickstart.md](quickstart.md)
 
 ---
 
