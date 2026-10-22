@@ -1,6 +1,7 @@
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { useAuth } from './auth/AuthContext';
 import RutaProtegida from './auth/RutaProtegida';
+import CambiarPassword from './pages/CambiarPassword';
 import DetalleReporte from './pages/DetalleReporte';
 import ListadoAdmin from './pages/ListadoAdmin';
 import Login from './pages/Login';
@@ -29,6 +30,7 @@ function Menu() {
       )}
       <NavLink to="/mis-reportes">Mis reportes</NavLink>
       <NavLink to="/reportes/nuevo">Nuevo reporte</NavLink>
+      <NavLink to="/cuenta/password">Cambiar contraseña</NavLink>
       <span className="usuario">{usuario.email}</span>
     </nav>
   );
@@ -50,6 +52,7 @@ export default function App() {
         <Route path="/admin/panel" element={<RutaProtegida rol="Administrador"><Panel /></RutaProtegida>} />
         <Route path="/admin/reportes" element={<RutaProtegida rol="Administrador"><ListadoAdmin /></RutaProtegida>} />
         <Route path="/reportes/:id" element={<RutaProtegida><DetalleReporte /></RutaProtegida>} />
+        <Route path="/cuenta/password" element={<RutaProtegida><CambiarPassword /></RutaProtegida>} />
         <Route path="*" element={<RutaProtegida><p>Página no encontrada.</p></RutaProtegida>} />
       </Routes>
     </>
