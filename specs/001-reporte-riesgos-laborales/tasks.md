@@ -241,7 +241,7 @@ tests se escriben primero y deben FALLAR antes de implementar. Nunca llaman a Cl
 - [X] T096 [US5] Implementar `ServicioImagenes.AdjuntarAsync` (creador, estado Abierto, conteo < 5 e inserción en una transacción, guarda en `data/imagenes/{guid}.{ext}` configurable) y `ObtenerAsync` (verificación de acceso igual que el reporte) en `backend/src/Riesgos.Core/Servicios/ServicioImagenes.cs`
 - [X] T097 [US5] Implementar `POST /api/reportes/{id}/imagenes` (multipart, un solo archivo `archivo`, `RequestSizeLimit` acorde a 2 MB) y `GET /api/reportes/{id}/imagenes/{imagenId}` en `backend/src/Riesgos.Api/Endpoints/ImagenesEndpoints.cs`, e incluir `imagenes` con `url` en el detalle (hace pasar T090–T091)
 - [X] T098 [US5] Agregar al detalle, para el creador y solo en Abierto, el formulario de edición y la subida de una imagen por vez (muestra cuántas quedan de 5); mostrar a creador y admin la galería con las imágenes (o "Sin imágenes", FR-033), en `frontend/src/components/EditarReporte.jsx`, `frontend/src/components/Imagenes.jsx` y `frontend/src/pages/DetalleReporte.jsx`
-- [ ] T099 [P] [US5] Tests de frontend de edición e imágenes (oculto fuera de Abierto, errores de validación de archivo) en `frontend/src/__tests__/US5.test.jsx`
+- [X] T099 [P] [US5] Tests de frontend de edición e imágenes (oculto fuera de Abierto, errores de validación de archivo) en `frontend/src/__tests__/US5.test.jsx`
 
 **Checkpoint**: US1–US5 funcionan; la edición reclasifica y las imágenes respetan límites y acceso.
 
