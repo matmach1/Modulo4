@@ -39,7 +39,7 @@ checklists que la spec deja para el plan. Cada decisión indica qué requisito o
     Nunca imágenes ni datos del usuario (ni email ni nombre).
   - Salida estructurada con `OutputConfig.Format = JsonOutputFormat` y un JSON Schema con `enum`
     cerrados para `tipo`, `categoria` y `criticidad` (ver [contracts/clasificador.md](contracts/clasificador.md)).
-  - `MaxTokens` bajo (~256), sin streaming.
+  - `MaxTokens` 2048 (incluye el razonamiento adaptativo del modelo), sin streaming.
 - **Rationale**: el Principio I exige un módulo dedicado detrás de una interfaz; la salida
   estructurada con enums elimina el parseo frágil y reduce las respuestas inválidas. Igual se
   valida la respuesta contra las listas (FR-018: valor inválido = falla).

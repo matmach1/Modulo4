@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{83A4FAC8-1AC1-4982-BF1B-407F2BA68513}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riesgos.Api", "src\Riesgos.Api\Riesgos.Api.csproj", "{4D929747-081A-4735-9180-F5CA841D39B7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riesgos.Clasificacion", "src\Riesgos.Clasificacion\Riesgos.Clasificacion.csproj", "{38D7F244-1C59-4DC7-8BCD-9B60CE07634A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riesgos.Core", "src\Riesgos.Core\Riesgos.Core.csproj", "{87F48C3B-FD5D-48C4-AAFE-893EBE222956}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{53606A9D-44B7-4DCD-94B5-80D3C623D4A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riesgos.Api.Tests", "tests\Riesgos.Api.Tests\Riesgos.Api.Tests.csproj", "{4A2C6571-6094-4377-8C7E-FF70E4A0331B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riesgos.Core.Tests", "tests\Riesgos.Core.Tests\Riesgos.Core.Tests.csproj", "{87FC6039-055E-451B-935A-CA72F26F7AD6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{3AAF07E5-6395-4906-87E8-9094B0F56C2C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Riesgos.Evaluacion", "tools\Riesgos.Evaluacion\Riesgos.Evaluacion.csproj", "{BB499C9A-8FEE-4D29-A41C-DF6FC244066E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D929747-081A-4735-9180-F5CA841D39B7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D929747-081A-4735-9180-F5CA841D39B7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D929747-081A-4735-9180-F5CA841D39B7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D929747-081A-4735-9180-F5CA841D39B7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{38D7F244-1C59-4DC7-8BCD-9B60CE07634A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{38D7F244-1C59-4DC7-8BCD-9B60CE07634A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{38D7F244-1C59-4DC7-8BCD-9B60CE07634A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{38D7F244-1C59-4DC7-8BCD-9B60CE07634A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87F48C3B-FD5D-48C4-AAFE-893EBE222956}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87F48C3B-FD5D-48C4-AAFE-893EBE222956}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87F48C3B-FD5D-48C4-AAFE-893EBE222956}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87F48C3B-FD5D-48C4-AAFE-893EBE222956}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4A2C6571-6094-4377-8C7E-FF70E4A0331B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4A2C6571-6094-4377-8C7E-FF70E4A0331B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4A2C6571-6094-4377-8C7E-FF70E4A0331B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4A2C6571-6094-4377-8C7E-FF70E4A0331B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87FC6039-055E-451B-935A-CA72F26F7AD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87FC6039-055E-451B-935A-CA72F26F7AD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87FC6039-055E-451B-935A-CA72F26F7AD6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87FC6039-055E-451B-935A-CA72F26F7AD6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB499C9A-8FEE-4D29-A41C-DF6FC244066E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB499C9A-8FEE-4D29-A41C-DF6FC244066E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB499C9A-8FEE-4D29-A41C-DF6FC244066E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB499C9A-8FEE-4D29-A41C-DF6FC244066E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4D929747-081A-4735-9180-F5CA841D39B7} = {83A4FAC8-1AC1-4982-BF1B-407F2BA68513}
+		{38D7F244-1C59-4DC7-8BCD-9B60CE07634A} = {83A4FAC8-1AC1-4982-BF1B-407F2BA68513}
+		{87F48C3B-FD5D-48C4-AAFE-893EBE222956} = {83A4FAC8-1AC1-4982-BF1B-407F2BA68513}
+		{4A2C6571-6094-4377-8C7E-FF70E4A0331B} = {53606A9D-44B7-4DCD-94B5-80D3C623D4A4}
+		{87FC6039-055E-451B-935A-CA72F26F7AD6} = {53606A9D-44B7-4DCD-94B5-80D3C623D4A4}
+		{BB499C9A-8FEE-4D29-A41C-DF6FC244066E} = {3AAF07E5-6395-4906-87E8-9094B0F56C2C}
+	EndGlobalSection
+EndGlobal
